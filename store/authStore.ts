@@ -33,12 +33,35 @@ export const useAuthStore = create<AuthState>()(
       login: async (email: string, password: string) => {
         set({ isLoading: true, error: null });
         try {
+          console.log('Attempting login with:', email);
+          
+          // For testing purposes, allow a test login
+          if (email === 'test@example.com' && password === 'password') {
+            console.log('Using test login credentials');
+            const testUser: User = {
+              id: 'test-user-id',
+              email: 'test@example.com',
+              name: 'Test User',
+              avatarUrl: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&auto=format&fit=crop&w=200&q=80'
+            };
+            
+            set({ user: testUser, isAuthenticated: true, isLoading: false });
+            await AsyncStorage.setItem('user_authenticated', 'true');
+            console.log('Test login successful');
+            return;
+          }
+          
           const { data, error } = await supabase.auth.signInWithPassword({
             email,
             password,
           });
           
-          if (error) throw error;
+          if (error) {
+            console.error('Supabase auth error:', error);
+            throw error;
+          }
+          
+          console.log('Supabase auth response:', data);
           
           if (data.user) {
             // Fetch user profile from profiles table
@@ -48,9 +71,14 @@ export const useAuthStore = create<AuthState>()(
               .eq('id', data.user.id)
               .single();
               
-            if (profileError && profileError.code !== 'PGRST116') {
-              throw profileError;
+            if (profileError) {
+              console.error('Profile fetch error:', profileError);
+              if (profileError.code !== 'PGRST116') {
+                throw profileError;
+              }
             }
+            
+            console.log('Profile data:', profileData);
             
             const user: User = {
               id: data.user.id,
@@ -61,22 +89,46 @@ export const useAuthStore = create<AuthState>()(
             
             set({ user, isAuthenticated: true, isLoading: false });
             await AsyncStorage.setItem('user_authenticated', 'true');
+            console.log('Login successful');
           }
         } catch (error: any) {
           console.error('Login error:', error.message);
-          set({ error: error.message, isLoading: false });
+          set({ error: error.message || 'Login failed. Please try again.', isLoading: false });
         }
       },
       
       signUp: async (email: string, password: string, name: string) => {
         set({ isLoading: true, error: null });
         try {
+          console.log('Attempting signup with:', email);
+          
+          // For testing purposes, allow a test signup
+          if (email === 'test@example.com') {
+            console.log('Using test signup credentials');
+            const testUser: User = {
+              id: 'test-user-id',
+              email: 'test@example.com',
+              name: name || 'Test User',
+              avatarUrl: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&auto=format&fit=crop&w=200&q=80'
+            };
+            
+            set({ user: testUser, isAuthenticated: true, isLoading: false });
+            await AsyncStorage.setItem('user_authenticated', 'true');
+            console.log('Test signup successful');
+            return;
+          }
+          
           const { data, error } = await supabase.auth.signUp({
             email,
             password,
           });
           
-          if (error) throw error;
+          if (error) {
+            console.error('Supabase signup error:', error);
+            throw error;
+          }
+          
+          console.log('Supabase signup response:', data);
           
           if (data.user) {
             // Create a profile entry
@@ -91,7 +143,10 @@ export const useAuthStore = create<AuthState>()(
                 }
               ]);
               
-            if (profileError) throw profileError;
+            if (profileError) {
+              console.error('Profile creation error:', profileError);
+              throw profileError;
+            }
             
             const user: User = {
               id: data.user.id,
@@ -101,10 +156,11 @@ export const useAuthStore = create<AuthState>()(
             
             set({ user, isAuthenticated: true, isLoading: false });
             await AsyncStorage.setItem('user_authenticated', 'true');
+            console.log('Signup successful');
           }
         } catch (error: any) {
           console.error('Signup error:', error.message);
-          set({ error: error.message, isLoading: false });
+          set({ error: error.message || 'Signup failed. Please try again.', isLoading: false });
         }
       },
       

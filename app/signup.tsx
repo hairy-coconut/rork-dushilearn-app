@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, TextInput, TouchableOpacity, Image, ScrollView, ActivityIndicator } from 'react-native';
+import { StyleSheet, Text, View, TextInput, TouchableOpacity, Image, ScrollView, ActivityIndicator, Alert } from 'react-native';
 import { useRouter } from 'expo-router';
 import { ArrowLeft } from 'lucide-react-native';
 import Colors from '@/constants/colors';
@@ -26,10 +26,25 @@ export default function SignupScreen() {
 
   const handleSignup = async () => {
     if (!name || !email || !password) {
+      Alert.alert('Missing Information', 'Please fill in all fields');
+      return;
+    }
+
+    if (password.length < 6) {
+      Alert.alert('Password Too Short', 'Password must be at least 6 characters');
       return;
     }
 
     await signUp(email, password, name);
+  };
+  
+  const handleTestSignup = async () => {
+    setName('Test User');
+    setEmail('test@example.com');
+    setPassword('password');
+    setTimeout(() => {
+      signUp('test@example.com', 'password', 'Test User');
+    }, 100);
   };
 
   return (
@@ -52,7 +67,11 @@ export default function SignupScreen() {
       </View>
 
       <View style={styles.formContainer}>
-        {error ? <Text style={styles.errorText}>{error}</Text> : null}
+        {error ? (
+          <View style={styles.errorContainer}>
+            <Text style={styles.errorText}>{error}</Text>
+          </View>
+        ) : null}
 
         <View style={styles.inputContainer}>
           <Text style={styles.inputLabel}>Name</Text>
@@ -105,6 +124,14 @@ export default function SignupScreen() {
           ) : (
             <Text style={styles.signupButtonText}>Create Account</Text>
           )}
+        </TouchableOpacity>
+        
+        <TouchableOpacity 
+          style={styles.testSignupButton} 
+          onPress={handleTestSignup}
+          disabled={isLoading}
+        >
+          <Text style={styles.testSignupText}>Use Test Account</Text>
         </TouchableOpacity>
       </View>
 
@@ -165,9 +192,14 @@ const styles = StyleSheet.create({
   formContainer: {
     marginBottom: 30,
   },
+  errorContainer: {
+    backgroundColor: Colors.error + '20',
+    padding: 12,
+    borderRadius: 8,
+    marginBottom: 16,
+  },
   errorText: {
     color: Colors.error,
-    marginBottom: 16,
     textAlign: 'center',
   },
   inputContainer: {
@@ -213,6 +245,16 @@ const styles = StyleSheet.create({
   },
   disabledButton: {
     opacity: 0.7,
+  },
+  testSignupButton: {
+    alignItems: 'center',
+    padding: 12,
+    marginTop: 16,
+  },
+  testSignupText: {
+    color: Colors.secondary,
+    fontSize: 16,
+    fontWeight: '500',
   },
   footer: {
     flexDirection: 'row',

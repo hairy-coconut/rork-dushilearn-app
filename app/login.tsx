@@ -1,19 +1,47 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, TextInput, TouchableOpacity, Image, ActivityIndicator } from 'react-native';
+import { StyleSheet, Text, View, TextInput, TouchableOpacity, Image, ActivityIndicator, Alert } from 'react-native';
 import { useRouter } from 'expo-router';
 import { ArrowLeft } from 'lucide-react-native';
 import Colors from '@/constants/colors';
 import { useAuthStore } from '@/store/authStore';
+import { supabase, isSupabaseConfigured } from '@/lib/supabase';
 
 export default function LoginScreen() {
   const router = useRouter();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const { login, isLoading, error, resetError, isAuthenticated } = useAuthStore();
+  const [supabaseStatus, setSupabaseStatus] = useState<string>('Checking...');
 
   useEffect(() => {
     // Reset error when component mounts
     resetError();
+    
+    // Check Supabase connection
+    const checkSupabase = async () => {
+      try {
+        if (!isSupabaseConfigured()) {
+          setSupabaseStatus('Not configured');
+          return;
+        }
+        
+        // Test connection with a simple query
+        const { data, error } = await supabase.from('profiles').select('count').limit(1);
+        
+        if (error) {
+          console.error('Supabase connection error:', error);
+          setSupabaseStatus('Error: ' + error.message);
+        } else {
+          setSupabaseStatus('Connected');
+          console.log('Supabase connection successful');
+        }
+      } catch (error: any) {
+        console.error('Error testing Supabase connection:', error);
+        setSupabaseStatus('Error: ' + error.message);
+      }
+    };
+    
+    checkSupabase();
   }, []);
 
   useEffect(() => {
@@ -25,10 +53,19 @@ export default function LoginScreen() {
 
   const handleLogin = async () => {
     if (!email || !password) {
+      Alert.alert('Missing Information', 'Please enter both email and password');
       return;
     }
 
     await login(email, password);
+  };
+  
+  const handleTestLogin = async () => {
+    setEmail('test@example.com');
+    setPassword('password');
+    setTimeout(() => {
+      login('test@example.com', 'password');
+    }, 100);
   };
 
   return (
@@ -50,7 +87,11 @@ export default function LoginScreen() {
       </View>
 
       <View style={styles.formContainer}>
-        {error ? <Text style={styles.errorText}>{error}</Text> : null}
+        {error ? (
+          <View style={styles.errorContainer}>
+            <Text style={styles.errorText}>{error}</Text>
+          </View>
+        ) : null}
 
         <View style={styles.inputContainer}>
           <Text style={styles.inputLabel}>Email</Text>
@@ -92,6 +133,23 @@ export default function LoginScreen() {
           ) : (
             <Text style={styles.loginButtonText}>Log In</Text>
           )}
+        </TouchableOpacity>
+        
+        <TouchableOpacity 
+          style={styles.testLoginButton} 
+          onPress={handleTestLogin}
+          disabled={isLoading}
+        >
+          <Text style={styles.testLoginText}>Use Test Account</Text>
+        </TouchableOpacity>
+        
+        <TouchableOpacity 
+          style={styles.supabaseStatus}
+          onPress={() => Alert.alert('Supabase Status', supabaseStatus)}
+        >
+          <Text style={styles.supabaseStatusText}>
+            Supabase: {supabaseStatus}
+          </Text>
         </TouchableOpacity>
       </View>
 
@@ -143,9 +201,14 @@ const styles = StyleSheet.create({
   formContainer: {
     marginBottom: 30,
   },
+  errorContainer: {
+    backgroundColor: Colors.error + '20',
+    padding: 12,
+    borderRadius: 8,
+    marginBottom: 16,
+  },
   errorText: {
     color: Colors.error,
-    marginBottom: 16,
     textAlign: 'center',
   },
   inputContainer: {
@@ -195,6 +258,25 @@ const styles = StyleSheet.create({
   },
   disabledButton: {
     opacity: 0.7,
+  },
+  testLoginButton: {
+    alignItems: 'center',
+    padding: 12,
+    marginTop: 16,
+  },
+  testLoginText: {
+    color: Colors.secondary,
+    fontSize: 16,
+    fontWeight: '500',
+  },
+  supabaseStatus: {
+    alignItems: 'center',
+    marginTop: 16,
+    padding: 8,
+  },
+  supabaseStatusText: {
+    fontSize: 12,
+    color: Colors.textLight,
   },
   footer: {
     flexDirection: 'row',
