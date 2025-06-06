@@ -1,0 +1,218 @@
+import React, { useState } from 'react';
+import { StyleSheet, Text, View, TextInput, TouchableOpacity, Image, ScrollView } from 'react-native';
+import { useRouter } from 'expo-router';
+import { ArrowLeft } from 'lucide-react-native';
+import Colors from '@/constants/colors';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+export default function SignupScreen() {
+  const router = useRouter();
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
+
+  const handleSignup = async () => {
+    if (!name || !email || !password) {
+      setError('Please fill in all fields');
+      return;
+    }
+
+    setIsLoading(true);
+    setError('');
+
+    try {
+      // For demo purposes, we'll just simulate a successful signup
+      // In a real app, you would create an account with your backend
+      await AsyncStorage.setItem('user_authenticated', 'true');
+      
+      // Navigate to onboarding
+      router.replace('/onboarding');
+    } catch (error) {
+      console.error('Signup error:', error);
+      setError('An error occurred during signup. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  return (
+    <ScrollView style={styles.container} contentContainerStyle={styles.content}>
+      <View style={styles.header}>
+        <TouchableOpacity onPress={() => router.back()}>
+          <ArrowLeft size={24} color={Colors.text} />
+        </TouchableOpacity>
+        <Text style={styles.title}>Sign Up</Text>
+        <View style={{ width: 24 }} />
+      </View>
+
+      <View style={styles.logoContainer}>
+        <Image 
+          source={{ uri: 'https://i.imgur.com/Yx2JQL0.png' }} 
+          style={styles.logo} 
+        />
+        <Text style={styles.appName}>dushiLearn</Text>
+      </View>
+
+      <View style={styles.formContainer}>
+        {error ? <Text style={styles.errorText}>{error}</Text> : null}
+
+        <View style={styles.inputContainer}>
+          <Text style={styles.inputLabel}>Name</Text>
+          <TextInput
+            style={styles.input}
+            value={name}
+            onChangeText={setName}
+            placeholder="Enter your name"
+          />
+        </View>
+
+        <View style={styles.inputContainer}>
+          <Text style={styles.inputLabel}>Email</Text>
+          <TextInput
+            style={styles.input}
+            value={email}
+            onChangeText={setEmail}
+            placeholder="Enter your email"
+            keyboardType="email-address"
+            autoCapitalize="none"
+          />
+        </View>
+
+        <View style={styles.inputContainer}>
+          <Text style={styles.inputLabel}>Password</Text>
+          <TextInput
+            style={styles.input}
+            value={password}
+            onChangeText={setPassword}
+            placeholder="Create a password"
+            secureTextEntry
+          />
+        </View>
+
+        <Text style={styles.termsText}>
+          By signing up, you agree to our Terms of Service and Privacy Policy
+        </Text>
+
+        <TouchableOpacity 
+          style={[styles.signupButton, isLoading && styles.disabledButton]} 
+          onPress={handleSignup}
+          disabled={isLoading}
+        >
+          <Text style={styles.signupButtonText}>
+            {isLoading ? 'Creating Account...' : 'Create Account'}
+          </Text>
+        </TouchableOpacity>
+      </View>
+
+      <View style={styles.footer}>
+        <Text style={styles.footerText}>Already have an account? </Text>
+        <TouchableOpacity onPress={() => router.push('/login')}>
+          <Text style={styles.loginText}>Log In</Text>
+        </TouchableOpacity>
+      </View>
+    </ScrollView>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: Colors.background,
+  },
+  content: {
+    padding: 20,
+    paddingBottom: 40,
+  },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 30,
+    paddingTop: 20,
+  },
+  title: {
+    fontSize: 20,
+    fontWeight: '600',
+    color: Colors.text,
+  },
+  logoContainer: {
+    alignItems: 'center',
+    marginBottom: 40,
+  },
+  logo: {
+    width: 80,
+    height: 80,
+    marginBottom: 16,
+  },
+  appName: {
+    fontSize: 24,
+    fontWeight: '700',
+    color: Colors.primary,
+  },
+  formContainer: {
+    marginBottom: 30,
+  },
+  errorText: {
+    color: Colors.error,
+    marginBottom: 16,
+    textAlign: 'center',
+  },
+  inputContainer: {
+    marginBottom: 20,
+  },
+  inputLabel: {
+    fontSize: 16,
+    fontWeight: '500',
+    color: Colors.text,
+    marginBottom: 8,
+  },
+  input: {
+    backgroundColor: Colors.card,
+    borderRadius: 12,
+    padding: 16,
+    fontSize: 16,
+    borderWidth: 1,
+    borderColor: Colors.border,
+  },
+  termsText: {
+    fontSize: 14,
+    color: Colors.textLight,
+    marginBottom: 24,
+    textAlign: 'center',
+  },
+  signupButton: {
+    backgroundColor: Colors.primary,
+    borderRadius: 12,
+    padding: 16,
+    alignItems: 'center',
+    shadowColor: Colors.primary,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 4,
+  },
+  signupButtonText: {
+    color: 'white',
+    fontSize: 18,
+    fontWeight: '600',
+  },
+  disabledButton: {
+    opacity: 0.7,
+  },
+  footer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginTop: 20,
+  },
+  footerText: {
+    fontSize: 16,
+    color: Colors.textLight,
+  },
+  loginText: {
+    fontSize: 16,
+    color: Colors.primary,
+    fontWeight: '600',
+  },
+});

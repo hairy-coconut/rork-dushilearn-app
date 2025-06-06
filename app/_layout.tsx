@@ -14,27 +14,34 @@ const queryClient = new QueryClient();
 SplashScreen.preventAutoHideAsync();
 
 export const unstable_settings = {
-  initialRouteName: "onboarding",
+  initialRouteName: "splash",
 };
 
 export default function RootLayout() {
   const [isOnboardingCompleted, setIsOnboardingCompleted] = useState<boolean | null>(null);
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
 
   useEffect(() => {
-    // Check if onboarding has been completed
-    const checkOnboarding = async () => {
+    // Check if user is authenticated and if onboarding has been completed
+    const checkAppState = async () => {
       try {
-        const onboardingCompleted = await AsyncStorage.getItem('onboarding_completed');
+        const [onboardingCompleted, userAuthenticated] = await Promise.all([
+          AsyncStorage.getItem('onboarding_completed'),
+          AsyncStorage.getItem('user_authenticated')
+        ]);
+        
         setIsOnboardingCompleted(onboardingCompleted === 'true');
+        setIsAuthenticated(userAuthenticated === 'true');
       } catch (error) {
-        console.error('Error checking onboarding status:', error);
+        console.error('Error checking app state:', error);
         setIsOnboardingCompleted(false);
+        setIsAuthenticated(false);
       }
     };
 
     // Hide the splash screen after a delay
     const hideSplash = async () => {
-      await checkOnboarding();
+      await checkAppState();
       await new Promise(resolve => setTimeout(resolve, 1000));
       await SplashScreen.hideAsync();
     };
@@ -42,8 +49,8 @@ export default function RootLayout() {
     hideSplash();
   }, []);
 
-  // Wait until we know if onboarding is completed
-  if (isOnboardingCompleted === null) {
+  // Wait until we know the app state
+  if (isOnboardingCompleted === null || isAuthenticated === null) {
     return null;
   }
 
@@ -66,7 +73,31 @@ export default function RootLayout() {
             },
           }}
         >
-          {!isOnboardingCompleted ? (
+          {!isAuthenticated ? (
+            <>
+              <Stack.Screen 
+                name="splash" 
+                options={{ 
+                  headerShown: false,
+                  animation: 'fade',
+                }} 
+              />
+              <Stack.Screen 
+                name="login" 
+                options={{ 
+                  headerShown: false,
+                  animation: 'slide_from_right',
+                }} 
+              />
+              <Stack.Screen 
+                name="signup" 
+                options={{ 
+                  headerShown: false,
+                  animation: 'slide_from_right',
+                }} 
+              />
+            </>
+          ) : !isOnboardingCompleted ? (
             <Stack.Screen 
               name="onboarding" 
               options={{ 
