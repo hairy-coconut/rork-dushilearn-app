@@ -70,7 +70,7 @@ export const playAudio = async (audioUrl: string) => {
       
       // Unload sound when finished
       sound.setOnPlaybackStatusUpdate(status => {
-        if (status.isLoaded && status.didJustFinish) {
+        if (status.isLoaded && status.didJustFinish === true) {
           sound.unloadAsync();
         }
       });
