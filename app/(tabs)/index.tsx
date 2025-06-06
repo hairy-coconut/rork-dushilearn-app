@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, Text, View, ScrollView, TouchableOpacity, Image } from 'react-native';
+import { StyleSheet, Text, View, ScrollView, TouchableOpacity, Image, Alert } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Play, Award, BookOpen } from 'lucide-react-native';
 import Colors from '@/constants/colors';
@@ -9,6 +9,7 @@ import ProgressBar from '@/components/ProgressBar';
 import LessonCard from '@/components/LessonCard';
 import MascotMessage from '@/components/MascotMessage';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { supabase, isSupabaseConfigured } from '@/lib/supabase';
 
 export default function HomeScreen() {
   const router = useRouter();
@@ -16,8 +17,9 @@ export default function HomeScreen() {
   const levelProgress = getLevelProgress();
   const [showMascot, setShowMascot] = useState(false);
   const [mascotType, setMascotType] = useState<'coco' | 'lora'>('coco');
+  const [supabaseStatus, setSupabaseStatus] = useState<string>('Checking...');
   
-  // Update streak when app opens
+  // Update streak when app opens and test Supabase connection
   useEffect(() => {
     updateStreak();
     
@@ -44,6 +46,32 @@ export default function HomeScreen() {
     };
     
     loadPreferences();
+    
+    // Test Supabase connection
+    const testSupabaseConnection = async () => {
+      try {
+        if (!isSupabaseConfigured()) {
+          setSupabaseStatus('Not configured');
+          return;
+        }
+        
+        // Simple query to test connection
+        const { data, error } = await supabase.from('profiles').select('count').limit(1);
+        
+        if (error) {
+          console.error('Supabase connection error:', error);
+          setSupabaseStatus('Error: ' + error.message);
+        } else {
+          setSupabaseStatus('Connected');
+          console.log('Supabase connection successful');
+        }
+      } catch (error) {
+        console.error('Error testing Supabase connection:', error);
+        setSupabaseStatus('Error connecting');
+      }
+    };
+    
+    testSupabaseConnection();
   }, []);
   
   // Find the first incomplete lesson
@@ -138,6 +166,16 @@ export default function HomeScreen() {
           ))
         ))}
       </View>
+      
+      {/* Supabase status (for debugging) */}
+      <TouchableOpacity 
+        style={styles.supabaseStatus}
+        onPress={() => Alert.alert('Supabase Status', supabaseStatus)}
+      >
+        <Text style={styles.supabaseStatusText}>
+          Supabase: {supabaseStatus}
+        </Text>
+      </TouchableOpacity>
       
       {/* Mascot message */}
       {showMascot && (
@@ -250,5 +288,14 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '700',
     color: Colors.primary,
+  },
+  supabaseStatus: {
+    padding: 8,
+    marginBottom: 16,
+    alignItems: 'center',
+  },
+  supabaseStatusText: {
+    fontSize: 12,
+    color: Colors.textLight,
   },
 });
