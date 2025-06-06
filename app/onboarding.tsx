@@ -41,11 +41,11 @@ export default function OnboardingScreen() {
       
       <View style={styles.optionsContainer}>
         {[
-          { value: 'tourist', label: "I'm visiting Curaçao/Aruba", icon: '🏝️' },
-          { value: 'expat', label: "I'm moving to the islands", icon: '🏠' },
-          { value: 'local', label: "I'm a local who wants to improve", icon: '🌴' },
-          { value: 'romance', label: "I have a special someone who speaks it", icon: '❤️' },
-          { value: 'other', label: "Just curious about the language", icon: '🧠' }
+          { value: 'tourist', label: "I'm visiting Curaçao/Aruba", icon: "🏝️" },
+          { value: 'expat', label: "I'm moving to the islands", icon: "🏠" },
+          { value: 'local', label: "I'm a local who wants to improve", icon: "🌴" },
+          { value: 'romance', label: "I have a special someone who speaks it", icon: "❤️" },
+          { value: 'other', label: "Just curious about the language", icon: "🧠" }
         ].map((option) => (
           <TouchableOpacity
             key={option.value}
