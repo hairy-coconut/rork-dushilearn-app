@@ -49,7 +49,7 @@ export default function LoginScreen() {
 
       <View style={styles.logoContainer}>
         <Image 
-          source={{ uri: 'https://i.imgur.com/Yx2JQL0.png' }} 
+          source={{ uri: 'https://pub-e001eb4506b145aa938b5d3badbff6a5.r2.dev/attachments/7niiuhw0axuryyp3p745i' }} 
           style={styles.logo} 
         />
         <Text style={styles.appName}>dushiLearn</Text>
