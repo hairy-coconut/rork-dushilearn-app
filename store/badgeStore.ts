@@ -1,0 +1,178 @@
+import { create } from 'zustand';
+import { persist, createJSONStorage } from 'zustand/middleware';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Badge } from '@/components/BadgeItem';
+
+// Define all available badges
+export const availableBadges: Badge[] = [
+  {
+    id: 'first_lesson',
+    name: 'First Steps',
+    description: 'Complete your first lesson',
+    icon: 'https://img.icons8.com/color/96/000000/prize.png',
+    earned: false,
+  },
+  {
+    id: 'three_day_streak',
+    name: '3-Day Streak',
+    description: 'Learn for 3 days in a row',
+    icon: 'https://img.icons8.com/color/96/000000/fire-element.png',
+    earned: false,
+  },
+  {
+    id: 'seven_day_streak',
+    name: 'Week Warrior',
+    description: 'Learn for 7 days in a row',
+    icon: 'https://img.icons8.com/color/96/000000/calendar-7.png',
+    earned: false,
+  },
+  {
+    id: 'perfect_score',
+    name: 'Perfect Score',
+    description: 'Complete a lesson without any mistakes',
+    icon: 'https://img.icons8.com/color/96/000000/prize-2.png',
+    earned: false,
+  },
+  {
+    id: 'basics_complete',
+    name: 'Basics Master',
+    description: 'Complete all lessons in the Basics category',
+    icon: 'https://img.icons8.com/color/96/000000/graduation-cap.png',
+    earned: false,
+  },
+  {
+    id: 'phrases_complete',
+    name: 'Phrase Expert',
+    description: 'Complete all lessons in the Common Phrases category',
+    icon: 'https://img.icons8.com/color/96/000000/chat.png',
+    earned: false,
+  },
+  {
+    id: 'vocabulary_complete',
+    name: 'Word Wizard',
+    description: 'Complete all lessons in the Vocabulary category',
+    icon: 'https://img.icons8.com/color/96/000000/book.png',
+    earned: false,
+  },
+  {
+    id: 'fifty_exercises',
+    name: 'Exercise Champion',
+    description: 'Complete 50 exercises',
+    icon: 'https://img.icons8.com/color/96/000000/weightlifting.png',
+    earned: false,
+  },
+  {
+    id: 'hundred_xp',
+    name: 'XP Hunter',
+    description: 'Earn 100 XP',
+    icon: 'https://img.icons8.com/color/96/000000/increase.png',
+    earned: false,
+  },
+  {
+    id: 'share_progress',
+    name: 'Social Butterfly',
+    description: 'Share your progress with friends',
+    icon: 'https://img.icons8.com/color/96/000000/share.png',
+    earned: false,
+  },
+];
+
+type BadgeState = {
+  badges: Badge[];
+  earnBadge: (badgeId: string) => void;
+  checkAndAwardBadges: (stats: {
+    completedLessons: string[];
+    streak: number;
+    xp: number;
+    perfectLessons: string[];
+  }) => string[];
+  getEarnedBadges: () => Badge[];
+  resetBadges: () => void;
+};
+
+export const useBadgeStore = create<BadgeState>()(
+  persist(
+    (set, get) => ({
+      badges: availableBadges,
+      
+      earnBadge: (badgeId: string) => {
+        set((state) => ({
+          badges: state.badges.map((badge) => 
+            badge.id === badgeId
+              ? { 
+                  ...badge, 
+                  earned: true, 
+                  earnedDate: new Date().toLocaleDateString() 
+                }
+              : badge
+          ),
+        }));
+      },
+      
+      checkAndAwardBadges: (stats) => {
+        const { badges, earnBadge } = get();
+        const newlyEarnedBadges: string[] = [];
+        
+        // Check each badge condition
+        badges.forEach(badge => {
+          if (!badge.earned) {
+            let shouldEarn = false;
+            
+            switch (badge.id) {
+              case 'first_lesson':
+                shouldEarn = stats.completedLessons.length > 0;
+                break;
+              case 'three_day_streak':
+                shouldEarn = stats.streak >= 3;
+                break;
+              case 'seven_day_streak':
+                shouldEarn = stats.streak >= 7;
+                break;
+              case 'perfect_score':
+                shouldEarn = stats.perfectLessons.length > 0;
+                break;
+              case 'basics_complete':
+                // Check if all basics lessons are completed
+                shouldEarn = stats.completedLessons.includes('greetings') &&
+                             stats.completedLessons.includes('introductions') &&
+                             stats.completedLessons.includes('numbers');
+                break;
+              case 'phrases_complete':
+                // Check if all phrases lessons are completed
+                shouldEarn = stats.completedLessons.includes('restaurant') &&
+                             stats.completedLessons.includes('directions');
+                break;
+              case 'vocabulary_complete':
+                // Check if all vocabulary lessons are completed
+                shouldEarn = stats.completedLessons.includes('colors') &&
+                             stats.completedLessons.includes('family');
+                break;
+              case 'hundred_xp':
+                shouldEarn = stats.xp >= 100;
+                break;
+            }
+            
+            if (shouldEarn) {
+              earnBadge(badge.id);
+              newlyEarnedBadges.push(badge.id);
+            }
+          }
+        });
+        
+        return newlyEarnedBadges;
+      },
+      
+      getEarnedBadges: () => {
+        return get().badges.filter(badge => badge.earned);
+      },
+      
+      resetBadges: () => {
+        set({ badges: availableBadges });
+      },
+    }),
+    {
+      name: 'dushilearn-badges',
+      storage: createJSONStorage(() => AsyncStorage),
+    }
+  )
+);
