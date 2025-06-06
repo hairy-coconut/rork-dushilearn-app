@@ -1,10 +1,9 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { createClient } from '@supabase/supabase-js';
 
-// Note: In a real app, you would use environment variables for these values
-// For this example, we're using placeholder values
-const supabaseUrl = 'YOUR_SUPABASE_URL';
-const supabaseAnonKey = 'YOUR_SUPABASE_ANON_KEY';
+// Supabase configuration with the provided project details
+const supabaseUrl = 'https://zjugdontxtmuqaiufikq.supabase.co';
+const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpqdWdkb250eHRtdXFhaXVmaWtxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDkyNDI1NzUsImV4cCI6MjA2NDgxODU3NX0.P9vWrMtiKBhPWImHTrx-Rw8OPXy38o4XOxbroZlkkK0';
 
 // Create a single supabase client for interacting with your database
 export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
@@ -18,5 +17,5 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
 
 // Helper function to check if Supabase is properly configured
 export const isSupabaseConfigured = () => {
-  return supabaseUrl !== 'YOUR_SUPABASE_URL' && supabaseAnonKey !== 'YOUR_SUPABASE_ANON_KEY';
+  return true; // Now properly configured with real values
 };

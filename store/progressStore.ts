@@ -3,6 +3,8 @@ import { persist, createJSONStorage } from 'zustand/middleware';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { categories } from '@/constants/lessons';
 import { useBadgeStore } from './badgeStore';
+import { supabase } from '@/lib/supabase';
+import { useAuthStore } from './authStore';
 
 type LessonProgress = {
   id: string;
@@ -25,12 +27,15 @@ type UserProgress = {
 };
 
 type ProgressState = UserProgress & {
-  completeLesson: (lessonId: string, score: number, totalExercises: number) => string[];
-  resetProgress: () => void;
-  updateStreak: () => void;
-  unlockLesson: (lessonId: string) => void;
+  isLoading: boolean;
+  error: string | null;
+  completeLesson: (lessonId: string, score: number, totalExercises: number) => Promise<string[]>;
+  resetProgress: () => Promise<void>;
+  updateStreak: () => Promise<void>;
+  unlockLesson: (lessonId: string) => Promise<void>;
   isLessonUnlocked: (lessonId: string) => boolean;
-  shareProgress: () => void;
+  shareProgress: () => Promise<void>;
+  syncWithSupabase: () => Promise<void>;
 };
 
 const initialState: UserProgress = {
@@ -49,8 +54,10 @@ export const useProgressStore = create<ProgressState>()(
   persist(
     (set, get) => ({
       ...initialState,
+      isLoading: false,
+      error: null,
       
-      completeLesson: (lessonId: string, score: number, totalExercises: number) => {
+      completeLesson: async (lessonId: string, score: number, totalExercises: number) => {
         const { completedLessons, lessonProgress, xp, perfectLessons, totalExercisesCompleted } = get();
         const newXp = xp + score;
         const level = Math.floor(newXp / 100) + 1;
@@ -123,7 +130,14 @@ export const useProgressStore = create<ProgressState>()(
           unlockedLessons: newUnlockedLessons,
         });
         
-        get().updateStreak();
+        await get().updateStreak();
+        
+        // Sync with Supabase
+        try {
+          await get().syncWithSupabase();
+        } catch (error) {
+          console.error('Error syncing with Supabase:', error);
+        }
         
         // Check for badges
         return useBadgeStore.getState().checkAndAwardBadges({
@@ -134,9 +148,12 @@ export const useProgressStore = create<ProgressState>()(
         });
       },
       
-      updateStreak: () => {
+      updateStreak: async () => {
         const { streak, lastStreak } = get();
         const today = new Date().toDateString();
+        
+        let newStreak = streak;
+        let newLastStreak = lastStreak;
         
         if (lastStreak) {
           const lastDate = new Date(lastStreak).toDateString();
@@ -147,22 +164,42 @@ export const useProgressStore = create<ProgressState>()(
           if (today !== lastDate) {
             if (yesterdayString === lastDate) {
               // Consecutive day
-              set({ streak: streak + 1, lastStreak: today });
+              newStreak = streak + 1;
+              newLastStreak = today;
             } else {
               // Streak broken
-              set({ streak: 1, lastStreak: today });
+              newStreak = 1;
+              newLastStreak = today;
             }
           }
         } else {
           // First time
-          set({ streak: 1, lastStreak: today });
+          newStreak = 1;
+          newLastStreak = today;
+        }
+        
+        set({ streak: newStreak, lastStreak: newLastStreak });
+        
+        // Sync with Supabase
+        try {
+          await get().syncWithSupabase();
+        } catch (error) {
+          console.error('Error syncing with Supabase:', error);
         }
       },
       
-      unlockLesson: (lessonId: string) => {
+      unlockLesson: async (lessonId: string) => {
         const { unlockedLessons } = get();
         if (!unlockedLessons.includes(lessonId)) {
-          set({ unlockedLessons: [...unlockedLessons, lessonId] });
+          const newUnlockedLessons = [...unlockedLessons, lessonId];
+          set({ unlockedLessons: newUnlockedLessons });
+          
+          // Sync with Supabase
+          try {
+            await get().syncWithSupabase();
+          } catch (error) {
+            console.error('Error syncing with Supabase:', error);
+          }
         }
       },
       
@@ -170,14 +207,99 @@ export const useProgressStore = create<ProgressState>()(
         return get().unlockedLessons.includes(lessonId);
       },
       
-      shareProgress: () => {
+      shareProgress: async () => {
         // Mark the share badge as earned
         useBadgeStore.getState().earnBadge('share_progress');
+        
+        // Sync with Supabase
+        try {
+          await get().syncWithSupabase();
+        } catch (error) {
+          console.error('Error syncing with Supabase:', error);
+        }
       },
       
-      resetProgress: () => {
-        set(initialState);
+      syncWithSupabase: async () => {
+        const user = useAuthStore.getState().user;
+        if (!user) return;
+        
+        set({ isLoading: true, error: null });
+        
+        try {
+          const {
+            completedLessons,
+            lessonProgress,
+            streak,
+            lastStreak,
+            xp,
+            level,
+            perfectLessons,
+            totalExercisesCompleted,
+            unlockedLessons
+          } = get();
+          
+          // Check if user progress exists
+          const { data: existingProgress, error: fetchError } = await supabase
+            .from('user_progress')
+            .select('*')
+            .eq('user_id', user.id)
+            .single();
+            
+          if (fetchError && fetchError.code !== 'PGRST116') {
+            throw fetchError;
+          }
+          
+          const progressData = {
+            user_id: user.id,
+            completed_lessons: completedLessons,
+            lesson_progress: lessonProgress,
+            streak,
+            last_streak: lastStreak,
+            xp,
+            level,
+            perfect_lessons: perfectLessons,
+            total_exercises_completed: totalExercisesCompleted,
+            unlocked_lessons: unlockedLessons,
+            updated_at: new Date().toISOString()
+          };
+          
+          if (existingProgress) {
+            // Update existing progress
+            const { error: updateError } = await supabase
+              .from('user_progress')
+              .update(progressData)
+              .eq('user_id', user.id);
+              
+            if (updateError) throw updateError;
+          } else {
+            // Insert new progress
+            const { error: insertError } = await supabase
+              .from('user_progress')
+              .insert([{
+                ...progressData,
+                created_at: new Date().toISOString()
+              }]);
+              
+            if (insertError) throw insertError;
+          }
+          
+          set({ isLoading: false });
+        } catch (error: any) {
+          console.error('Error syncing progress with Supabase:', error.message);
+          set({ error: error.message, isLoading: false });
+        }
+      },
+      
+      resetProgress: async () => {
+        set({ ...initialState });
         useBadgeStore.getState().resetBadges();
+        
+        // Sync with Supabase
+        try {
+          await get().syncWithSupabase();
+        } catch (error) {
+          console.error('Error syncing with Supabase:', error);
+        }
       },
     }),
     {

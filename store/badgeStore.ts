@@ -2,6 +2,8 @@ import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Badge } from '@/components/BadgeItem';
+import { supabase } from '@/lib/supabase';
+import { useAuthStore } from './authStore';
 
 // Define all available badges
 export const availableBadges: Badge[] = [
@@ -79,7 +81,9 @@ export const availableBadges: Badge[] = [
 
 type BadgeState = {
   badges: Badge[];
-  earnBadge: (badgeId: string) => void;
+  isLoading: boolean;
+  error: string | null;
+  earnBadge: (badgeId: string) => Promise<void>;
   checkAndAwardBadges: (stats: {
     completedLessons: string[];
     streak: number;
@@ -87,30 +91,40 @@ type BadgeState = {
     perfectLessons: string[];
   }) => string[];
   getEarnedBadges: () => Badge[];
-  resetBadges: () => void;
+  resetBadges: () => Promise<void>;
+  syncWithSupabase: () => Promise<void>;
 };
 
 export const useBadgeStore = create<BadgeState>()(
   persist(
     (set, get) => ({
       badges: availableBadges,
+      isLoading: false,
+      error: null,
       
-      earnBadge: (badgeId: string) => {
-        set((state) => ({
-          badges: state.badges.map((badge) => 
-            badge.id === badgeId
-              ? { 
-                  ...badge, 
-                  earned: true, 
-                  earnedDate: new Date().toLocaleDateString() 
-                }
-              : badge
-          ),
-        }));
+      earnBadge: async (badgeId: string) => {
+        const newBadges = get().badges.map((badge) => 
+          badge.id === badgeId
+            ? { 
+                ...badge, 
+                earned: true, 
+                earnedDate: new Date().toLocaleDateString() 
+              }
+            : badge
+        );
+        
+        set({ badges: newBadges });
+        
+        // Sync with Supabase
+        try {
+          await get().syncWithSupabase();
+        } catch (error) {
+          console.error('Error syncing badges with Supabase:', error);
+        }
       },
       
       checkAndAwardBadges: (stats) => {
-        const { badges, earnBadge } = get();
+        const { badges } = get();
         const newlyEarnedBadges: string[] = [];
         
         // Check each badge condition
@@ -153,7 +167,7 @@ export const useBadgeStore = create<BadgeState>()(
             }
             
             if (shouldEarn) {
-              earnBadge(badge.id);
+              get().earnBadge(badge.id);
               newlyEarnedBadges.push(badge.id);
             }
           }
@@ -166,8 +180,66 @@ export const useBadgeStore = create<BadgeState>()(
         return get().badges.filter(badge => badge.earned);
       },
       
-      resetBadges: () => {
+      syncWithSupabase: async () => {
+        const user = useAuthStore.getState().user;
+        if (!user) return;
+        
+        set({ isLoading: true, error: null });
+        
+        try {
+          const { badges } = get();
+          const earnedBadges = badges.filter(badge => badge.earned);
+          
+          // Check if user badges exist
+          const { data: existingBadges, error: fetchError } = await supabase
+            .from('user_badges')
+            .select('*')
+            .eq('user_id', user.id);
+            
+          if (fetchError) throw fetchError;
+          
+          // Delete existing badges
+          if (existingBadges && existingBadges.length > 0) {
+            const { error: deleteError } = await supabase
+              .from('user_badges')
+              .delete()
+              .eq('user_id', user.id);
+              
+            if (deleteError) throw deleteError;
+          }
+          
+          // Insert earned badges
+          if (earnedBadges.length > 0) {
+            const badgeRecords = earnedBadges.map(badge => ({
+              user_id: user.id,
+              badge_id: badge.id,
+              earned_date: badge.earnedDate || new Date().toISOString(),
+              created_at: new Date().toISOString()
+            }));
+            
+            const { error: insertError } = await supabase
+              .from('user_badges')
+              .insert(badgeRecords);
+              
+            if (insertError) throw insertError;
+          }
+          
+          set({ isLoading: false });
+        } catch (error: any) {
+          console.error('Error syncing badges with Supabase:', error.message);
+          set({ error: error.message, isLoading: false });
+        }
+      },
+      
+      resetBadges: async () => {
         set({ badges: availableBadges });
+        
+        // Sync with Supabase
+        try {
+          await get().syncWithSupabase();
+        } catch (error) {
+          console.error('Error syncing badges with Supabase:', error);
+        }
       },
     }),
     {

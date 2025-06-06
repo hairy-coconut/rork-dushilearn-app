@@ -1,40 +1,34 @@
-import React, { useState } from 'react';
-import { StyleSheet, Text, View, TextInput, TouchableOpacity, Image, Animated } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { StyleSheet, Text, View, TextInput, TouchableOpacity, Image, ActivityIndicator } from 'react-native';
 import { useRouter } from 'expo-router';
 import { ArrowLeft } from 'lucide-react-native';
 import Colors from '@/constants/colors';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useAuthStore } from '@/store/authStore';
 
 export default function LoginScreen() {
   const router = useRouter();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState('');
+  const { login, isLoading, error, resetError, isAuthenticated } = useAuthStore();
+
+  useEffect(() => {
+    // Reset error when component mounts
+    resetError();
+  }, []);
+
+  useEffect(() => {
+    // Redirect to main app if authenticated
+    if (isAuthenticated) {
+      router.replace('/onboarding');
+    }
+  }, [isAuthenticated]);
 
   const handleLogin = async () => {
     if (!email || !password) {
-      setError('Please enter both email and password');
       return;
     }
 
-    setIsLoading(true);
-    setError('');
-
-    try {
-      // For demo purposes, we'll just simulate a successful login
-      // In a real app, you would validate credentials with your backend
-      await AsyncStorage.setItem('user_authenticated', 'true');
-      await AsyncStorage.setItem('onboarding_completed', 'true');
-      
-      // Navigate to the main app
-      router.replace('/(tabs)');
-    } catch (error) {
-      console.error('Login error:', error);
-      setError('An error occurred during login. Please try again.');
-    } finally {
-      setIsLoading(false);
-    }
+    await login(email, password);
   };
 
   return (
@@ -67,6 +61,7 @@ export default function LoginScreen() {
             placeholder="Enter your email"
             keyboardType="email-address"
             autoCapitalize="none"
+            editable={!isLoading}
           />
         </View>
 
@@ -78,6 +73,7 @@ export default function LoginScreen() {
             onChangeText={setPassword}
             placeholder="Enter your password"
             secureTextEntry
+            editable={!isLoading}
           />
         </View>
 
@@ -91,9 +87,11 @@ export default function LoginScreen() {
           disabled={isLoading}
           activeOpacity={0.8}
         >
-          <Text style={styles.loginButtonText}>
-            {isLoading ? 'Logging in...' : 'Log In'}
-          </Text>
+          {isLoading ? (
+            <ActivityIndicator color="white" />
+          ) : (
+            <Text style={styles.loginButtonText}>Log In</Text>
+          )}
         </TouchableOpacity>
       </View>
 
@@ -187,6 +185,8 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.3,
     shadowRadius: 8,
     elevation: 4,
+    height: 56,
+    justifyContent: 'center',
   },
   loginButtonText: {
     color: 'white',

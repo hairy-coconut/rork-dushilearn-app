@@ -1,40 +1,35 @@
-import React, { useState } from 'react';
-import { StyleSheet, Text, View, TextInput, TouchableOpacity, Image, ScrollView } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { StyleSheet, Text, View, TextInput, TouchableOpacity, Image, ScrollView, ActivityIndicator } from 'react-native';
 import { useRouter } from 'expo-router';
 import { ArrowLeft } from 'lucide-react-native';
 import Colors from '@/constants/colors';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useAuthStore } from '@/store/authStore';
 
 export default function SignupScreen() {
   const router = useRouter();
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState('');
+  const { signUp, isLoading, error, resetError, isAuthenticated } = useAuthStore();
+
+  useEffect(() => {
+    // Reset error when component mounts
+    resetError();
+  }, []);
+
+  useEffect(() => {
+    // Redirect to onboarding if authenticated
+    if (isAuthenticated) {
+      router.replace('/onboarding');
+    }
+  }, [isAuthenticated]);
 
   const handleSignup = async () => {
     if (!name || !email || !password) {
-      setError('Please fill in all fields');
       return;
     }
 
-    setIsLoading(true);
-    setError('');
-
-    try {
-      // For demo purposes, we'll just simulate a successful signup
-      // In a real app, you would create an account with your backend
-      await AsyncStorage.setItem('user_authenticated', 'true');
-      
-      // Navigate to onboarding
-      router.replace('/onboarding');
-    } catch (error) {
-      console.error('Signup error:', error);
-      setError('An error occurred during signup. Please try again.');
-    } finally {
-      setIsLoading(false);
-    }
+    await signUp(email, password, name);
   };
 
   return (
@@ -66,6 +61,7 @@ export default function SignupScreen() {
             value={name}
             onChangeText={setName}
             placeholder="Enter your name"
+            editable={!isLoading}
           />
         </View>
 
@@ -78,6 +74,7 @@ export default function SignupScreen() {
             placeholder="Enter your email"
             keyboardType="email-address"
             autoCapitalize="none"
+            editable={!isLoading}
           />
         </View>
 
@@ -87,8 +84,9 @@ export default function SignupScreen() {
             style={styles.input}
             value={password}
             onChangeText={setPassword}
-            placeholder="Create a password"
+            placeholder="Create a password (min. 6 characters)"
             secureTextEntry
+            editable={!isLoading}
           />
         </View>
 
@@ -102,9 +100,11 @@ export default function SignupScreen() {
           disabled={isLoading}
           activeOpacity={0.8}
         >
-          <Text style={styles.signupButtonText}>
-            {isLoading ? 'Creating Account...' : 'Create Account'}
-          </Text>
+          {isLoading ? (
+            <ActivityIndicator color="white" />
+          ) : (
+            <Text style={styles.signupButtonText}>Create Account</Text>
+          )}
         </TouchableOpacity>
       </View>
 
@@ -203,6 +203,8 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.3,
     shadowRadius: 8,
     elevation: 4,
+    height: 56,
+    justifyContent: 'center',
   },
   signupButtonText: {
     color: 'white',

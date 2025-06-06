@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { StyleSheet, Text, View, ScrollView, TouchableOpacity, Switch, Alert, Image } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Settings, Bell, Moon, Volume2, Globe, Award, LogOut, Share2 } from 'lucide-react-native';
@@ -6,6 +6,7 @@ import Colors from '@/constants/colors';
 import ProfileHeader from '@/components/ProfileHeader';
 import { useProgressStore, getLevelProgress } from '@/store/progressStore';
 import { useBadgeStore } from '@/store/badgeStore';
+import { useAuthStore } from '@/store/authStore';
 import BadgeItem from '@/components/BadgeItem';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Platform } from 'react-native';
@@ -14,9 +15,24 @@ export default function ProfileScreen() {
   const router = useRouter();
   const { streak, xp, level, resetProgress, shareProgress } = useProgressStore();
   const { badges } = useBadgeStore();
+  const { user, logout } = useAuthStore();
   const levelProgress = getLevelProgress();
   
   const earnedBadges = badges.filter(badge => badge.earned);
+  
+  // Sync with Supabase when component mounts
+  useEffect(() => {
+    const syncData = async () => {
+      try {
+        await useProgressStore.getState().syncWithSupabase();
+        await useBadgeStore.getState().syncWithSupabase();
+      } catch (error) {
+        console.error('Error syncing data with Supabase:', error);
+      }
+    };
+    
+    syncData();
+  }, []);
   
   const handleResetProgress = () => {
     Alert.alert(
@@ -31,6 +47,26 @@ export default function ProfileScreen() {
           text: "Reset", 
           onPress: () => resetProgress(),
           style: "destructive"
+        }
+      ]
+    );
+  };
+  
+  const handleLogout = () => {
+    Alert.alert(
+      "Log Out",
+      "Are you sure you want to log out?",
+      [
+        {
+          text: "Cancel",
+          style: "cancel"
+        },
+        { 
+          text: "Log Out", 
+          onPress: async () => {
+            await logout();
+            router.replace('/splash');
+          }
         }
       ]
     );
@@ -65,11 +101,12 @@ export default function ProfileScreen() {
       showsVerticalScrollIndicator={false}
     >
       <ProfileHeader 
-        name="Learner"
+        name={user?.name || "Learner"}
         streak={streak}
         xp={xp}
         level={level}
         progress={levelProgress}
+        avatarUrl={user?.avatarUrl}
       />
       
       {/* Badges section */}
@@ -206,6 +243,14 @@ export default function ProfileScreen() {
         >
           <LogOut size={20} color={Colors.error} />
           <Text style={styles.resetButtonText}>Reset Progress</Text>
+        </TouchableOpacity>
+        
+        <TouchableOpacity 
+          style={styles.logoutButton}
+          onPress={handleLogout}
+        >
+          <LogOut size={20} color={Colors.text} />
+          <Text style={styles.logoutButtonText}>Log Out</Text>
         </TouchableOpacity>
       </View>
     </ScrollView>
@@ -345,6 +390,21 @@ const styles = StyleSheet.create({
   resetButtonText: {
     fontSize: 16,
     color: Colors.error,
+    fontWeight: '600',
+    marginLeft: 8,
+  },
+  logoutButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 16,
+    backgroundColor: Colors.card,
+    borderRadius: 12,
+    marginTop: 12,
+  },
+  logoutButtonText: {
+    fontSize: 16,
+    color: Colors.text,
     fontWeight: '600',
     marginLeft: 8,
   },

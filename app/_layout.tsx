@@ -6,6 +6,10 @@ import Colors from "@/constants/colors";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { trpc, trpcClient } from "@/lib/trpc";
+import { supabase } from "@/lib/supabase";
+import { useAuthStore } from "@/store/authStore";
+import { useProgressStore } from "@/store/progressStore";
+import { useBadgeStore } from "@/store/badgeStore";
 
 // Create a client
 const queryClient = new QueryClient();
@@ -20,18 +24,49 @@ export const unstable_settings = {
 export default function RootLayout() {
   const [isOnboardingCompleted, setIsOnboardingCompleted] = useState<boolean | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
+  const { user, login } = useAuthStore();
+  const { syncWithSupabase: syncProgress } = useProgressStore();
+  const { syncWithSupabase: syncBadges } = useBadgeStore();
 
   useEffect(() => {
     // Check if user is authenticated and if onboarding has been completed
     const checkAppState = async () => {
       try {
-        const [onboardingCompleted, userAuthenticated] = await Promise.all([
-          AsyncStorage.getItem('onboarding_completed'),
-          AsyncStorage.getItem('user_authenticated')
-        ]);
+        // Check for existing session
+        const { data: { session } } = await supabase.auth.getSession();
         
+        if (session?.user) {
+          // Get user profile
+          const { data: profileData } = await supabase
+            .from('profiles')
+            .select('*')
+            .eq('id', session.user.id)
+            .single();
+            
+          // Set user in auth store
+          if (profileData) {
+            const user = {
+              id: session.user.id,
+              email: session.user.email || '',
+              name: profileData.name || session.user.email?.split('@')[0] || 'User',
+              avatarUrl: profileData.avatar_url,
+            };
+            
+            // Update auth store
+            login(user.email, ''); // This is just to set the user in the store
+          }
+          
+          setIsAuthenticated(true);
+          
+          // Sync data from Supabase
+          await syncProgress();
+          await syncBadges();
+        } else {
+          setIsAuthenticated(false);
+        }
+        
+        const onboardingCompleted = await AsyncStorage.getItem('onboarding_completed');
         setIsOnboardingCompleted(onboardingCompleted === 'true');
-        setIsAuthenticated(userAuthenticated === 'true');
       } catch (error) {
         console.error('Error checking app state:', error);
         setIsOnboardingCompleted(false);
