@@ -34,7 +34,7 @@ export default function SplashScreen() {
     <View style={styles.container}>
       <View style={styles.logoContainer}>
         <Animated.Image 
-          source={{ uri: 'https://i.imgur.com/Yx2JQL0.png' }} 
+          source={{ uri: 'https://images.unsplash.com/photo-1541364983171-a8ba01e95cfc?ixlib=rb-1.2.1&auto=format&fit=crop&w=400&q=80' }} 
           style={[styles.logo, { transform: [{ scale: logoScale }] }]} 
         />
         <Text style={styles.appName}>dushiLearn</Text>
@@ -89,6 +89,7 @@ const styles = StyleSheet.create({
     width: 180,
     height: 180,
     marginBottom: 20,
+    borderRadius: 90,
   },
   appName: {
     fontSize: 36,
