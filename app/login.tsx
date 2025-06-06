@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, TextInput, TouchableOpacity, Image } from 'react-native';
+import { StyleSheet, Text, View, TextInput, TouchableOpacity, Image, Animated } from 'react-native';
 import { useRouter } from 'expo-router';
 import { ArrowLeft } from 'lucide-react-native';
 import Colors from '@/constants/colors';
@@ -40,7 +40,7 @@ export default function LoginScreen() {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => router.back()}>
+        <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
           <ArrowLeft size={24} color={Colors.text} />
         </TouchableOpacity>
         <Text style={styles.title}>Log In</Text>
@@ -89,6 +89,7 @@ export default function LoginScreen() {
           style={[styles.loginButton, isLoading && styles.disabledButton]} 
           onPress={handleLogin}
           disabled={isLoading}
+          activeOpacity={0.8}
         >
           <Text style={styles.loginButtonText}>
             {isLoading ? 'Logging in...' : 'Log In'}
@@ -118,6 +119,9 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     marginBottom: 30,
     paddingTop: 20,
+  },
+  backButton: {
+    padding: 8,
   },
   title: {
     fontSize: 20,
@@ -166,6 +170,7 @@ const styles = StyleSheet.create({
   forgotPassword: {
     alignSelf: 'flex-end',
     marginBottom: 24,
+    padding: 4,
   },
   forgotPasswordText: {
     color: Colors.primary,
@@ -174,7 +179,7 @@ const styles = StyleSheet.create({
   },
   loginButton: {
     backgroundColor: Colors.primary,
-    borderRadius: 12,
+    borderRadius: 16,
     padding: 16,
     alignItems: 'center',
     shadowColor: Colors.primary,
@@ -196,6 +201,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginTop: 'auto',
     marginBottom: 20,
+    padding: 8,
   },
   footerText: {
     fontSize: 16,

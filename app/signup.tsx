@@ -40,7 +40,7 @@ export default function SignupScreen() {
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => router.back()}>
+        <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
           <ArrowLeft size={24} color={Colors.text} />
         </TouchableOpacity>
         <Text style={styles.title}>Sign Up</Text>
@@ -53,6 +53,7 @@ export default function SignupScreen() {
           style={styles.logo} 
         />
         <Text style={styles.appName}>dushiLearn</Text>
+        <Text style={styles.tagline}>Your daily dose of Papiamentu paradise 🌴</Text>
       </View>
 
       <View style={styles.formContainer}>
@@ -99,6 +100,7 @@ export default function SignupScreen() {
           style={[styles.signupButton, isLoading && styles.disabledButton]} 
           onPress={handleSignup}
           disabled={isLoading}
+          activeOpacity={0.8}
         >
           <Text style={styles.signupButtonText}>
             {isLoading ? 'Creating Account...' : 'Create Account'}
@@ -132,6 +134,9 @@ const styles = StyleSheet.create({
     marginBottom: 30,
     paddingTop: 20,
   },
+  backButton: {
+    padding: 8,
+  },
   title: {
     fontSize: 20,
     fontWeight: '600',
@@ -150,6 +155,12 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: '700',
     color: Colors.primary,
+    marginBottom: 8,
+  },
+  tagline: {
+    fontSize: 16,
+    color: Colors.textLight,
+    textAlign: 'center',
   },
   formContainer: {
     marginBottom: 30,
@@ -184,7 +195,7 @@ const styles = StyleSheet.create({
   },
   signupButton: {
     backgroundColor: Colors.primary,
-    borderRadius: 12,
+    borderRadius: 16,
     padding: 16,
     alignItems: 'center',
     shadowColor: Colors.primary,
@@ -205,6 +216,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     marginTop: 20,
+    padding: 8,
   },
   footerText: {
     fontSize: 16,

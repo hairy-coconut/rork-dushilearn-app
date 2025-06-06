@@ -1,10 +1,22 @@
-import React from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, Image, Linking } from 'react-native';
+import React, { useEffect, useRef } from 'react';
+import { StyleSheet, Text, View, TouchableOpacity, Image, Linking, Animated } from 'react-native';
 import { useRouter } from 'expo-router';
 import Colors from '@/constants/colors';
 
 export default function SplashScreen() {
   const router = useRouter();
+  const logoScale = useRef(new Animated.Value(0.9)).current;
+
+  useEffect(() => {
+    // Gentle bounce animation for the logo
+    Animated.spring(logoScale, {
+      toValue: 1,
+      friction: 8,
+      tension: 40,
+      useNativeDriver: true,
+      delay: 300,
+    }).start();
+  }, []);
 
   const handleLoginPress = () => {
     router.push('/login');
@@ -21,12 +33,30 @@ export default function SplashScreen() {
   return (
     <View style={styles.container}>
       <View style={styles.logoContainer}>
-        <Image 
+        <Animated.Image 
           source={{ uri: 'https://i.imgur.com/Yx2JQL0.png' }} 
-          style={styles.logo} 
+          style={[styles.logo, { transform: [{ scale: logoScale }] }]} 
         />
         <Text style={styles.appName}>dushiLearn</Text>
-        <Text style={styles.tagline}>Learn Papiamento the fun way!</Text>
+        <Text style={styles.tagline}>Talk like a local. Learn with island vibes. 🌴</Text>
+      </View>
+
+      <View style={styles.buttonContainer}>
+        <TouchableOpacity 
+          style={[styles.button, styles.signupButton]} 
+          onPress={handleSignUpPress}
+          activeOpacity={0.8}
+        >
+          <Text style={styles.signupButtonText}>Sign Up</Text>
+        </TouchableOpacity>
+        
+        <TouchableOpacity 
+          style={[styles.button, styles.loginButton]} 
+          onPress={handleLoginPress}
+          activeOpacity={0.8}
+        >
+          <Text style={styles.loginButtonText}>Log In</Text>
+        </TouchableOpacity>
       </View>
 
       <TouchableOpacity 
@@ -37,22 +67,6 @@ export default function SplashScreen() {
           Made with ❤️ by Tommy Coconut
         </Text>
       </TouchableOpacity>
-
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity 
-          style={[styles.button, styles.loginButton]} 
-          onPress={handleLoginPress}
-        >
-          <Text style={styles.loginButtonText}>Log In</Text>
-        </TouchableOpacity>
-        
-        <TouchableOpacity 
-          style={[styles.button, styles.signupButton]} 
-          onPress={handleSignUpPress}
-        >
-          <Text style={styles.signupButtonText}>Sign Up</Text>
-        </TouchableOpacity>
-      </View>
     </View>
   );
 }
@@ -62,43 +76,40 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: Colors.background,
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'space-between',
     padding: 20,
+    paddingTop: 60,
+    paddingBottom: 40,
   },
   logoContainer: {
     alignItems: 'center',
-    marginBottom: 60,
+    marginTop: 40,
   },
   logo: {
-    width: 120,
-    height: 120,
+    width: 180,
+    height: 180,
     marginBottom: 20,
   },
   appName: {
     fontSize: 36,
     fontWeight: '700',
     color: Colors.primary,
-    marginBottom: 8,
+    marginBottom: 12,
   },
   tagline: {
     fontSize: 18,
     color: Colors.textLight,
-  },
-  creatorLink: {
-    marginBottom: 60,
-    padding: 10,
-  },
-  creatorText: {
-    fontSize: 16,
-    color: Colors.secondary,
-    textDecorationLine: 'underline',
+    textAlign: 'center',
+    maxWidth: '90%',
   },
   buttonContainer: {
     width: '100%',
-    maxWidth: 300,
+    maxWidth: 320,
+    marginTop: 'auto',
+    marginBottom: 40,
   },
   button: {
-    borderRadius: 12,
+    borderRadius: 16,
     padding: 16,
     alignItems: 'center',
     marginBottom: 16,
@@ -108,16 +119,6 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 2,
   },
-  loginButton: {
-    backgroundColor: 'transparent',
-    borderWidth: 2,
-    borderColor: Colors.primary,
-  },
-  loginButtonText: {
-    color: Colors.primary,
-    fontSize: 18,
-    fontWeight: '600',
-  },
   signupButton: {
     backgroundColor: Colors.primary,
   },
@@ -125,5 +126,23 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 18,
     fontWeight: '600',
+  },
+  loginButton: {
+    backgroundColor: 'transparent',
+    borderWidth: 1.5,
+    borderColor: Colors.primary,
+  },
+  loginButtonText: {
+    color: Colors.primary,
+    fontSize: 18,
+    fontWeight: '600',
+  },
+  creatorLink: {
+    padding: 10,
+  },
+  creatorText: {
+    fontSize: 14,
+    color: Colors.secondary,
+    textDecorationLine: 'underline',
   },
 });
