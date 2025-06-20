@@ -1,12 +1,26 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+
 import { Badge } from '@/components/BadgeItem';
-import { supabase } from '@/lib/supabase';
+import { supabase } from '@/utils/supabase';
 import { useAuthStore } from './authStore';
 
 // Define all available badges
 export const availableBadges: Badge[] = [
+  {
+    id: 'first_words',
+    name: 'First Words',
+    description: 'Complete the Bon Bini Curaçao! lesson',
+    icon: require('../assets/first_words.png'),
+    earned: false,
+  },
+  {
+    id: 'island_beginner',
+    name: 'Island Beginner',
+    description: 'Complete the Island Vibes: Basic Phrases lesson',
+    icon: require('../assets/island_beginner.png'),
+    earned: false,
+  },
   {
     id: 'first_lesson',
     name: 'First Steps',
@@ -133,6 +147,12 @@ export const useBadgeStore = create<BadgeState>()(
             let shouldEarn = false;
             
             switch (badge.id) {
+              case 'first_words':
+                shouldEarn = stats.completedLessons.includes('bon-bini-curacao');
+                break;
+              case 'island_beginner':
+                shouldEarn = stats.completedLessons.includes('island-vibes-basic-phrases');
+                break;
               case 'first_lesson':
                 shouldEarn = stats.completedLessons.length > 0;
                 break;
@@ -243,8 +263,14 @@ export const useBadgeStore = create<BadgeState>()(
       },
     }),
     {
-      name: 'dushilearn-badges',
-      storage: createJSONStorage(() => AsyncStorage),
+      name: 'badge-store',
+      storage: createJSONStorage(() => {
+        if (typeof window !== 'undefined') {
+          return window.localStorage;
+        } else {
+          return require('@react-native-async-storage/async-storage').default;
+        }
+      }),
     }
   )
 );

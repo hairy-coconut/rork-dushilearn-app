@@ -1,6 +1,6 @@
 import React from "react";
 import { Tabs } from "expo-router";
-import { Home, BookOpen, BarChart2, User } from "lucide-react-native";
+import { MaterialIcons } from '@expo/vector-icons';
 import Colors from "@/constants/colors";
 
 export default function TabLayout() {
@@ -36,7 +36,7 @@ export default function TabLayout() {
         name="index"
         options={{
           title: "Home",
-          tabBarIcon: ({ color, size }) => <Home size={size} color={color} />,
+          tabBarIcon: ({ color, size }) => <MaterialIcons name="home" size={size} color={color} />,
           headerTitle: "dushiLearn",
         }}
       />
@@ -44,21 +44,21 @@ export default function TabLayout() {
         name="lessons"
         options={{
           title: "Lessons",
-          tabBarIcon: ({ color, size }) => <BookOpen size={size} color={color} />,
+          tabBarIcon: ({ color, size }) => <MaterialIcons name="menu-book" size={size} color={color} />,
         }}
       />
       <Tabs.Screen
         name="progress"
         options={{
           title: "Progress",
-          tabBarIcon: ({ color, size }) => <BarChart2 size={size} color={color} />,
+          tabBarIcon: ({ color, size }) => <MaterialIcons name="bar-chart" size={size} color={color} />,
         }}
       />
       <Tabs.Screen
         name="profile"
         options={{
           title: "Profile",
-          tabBarIcon: ({ color, size }) => <User size={size} color={color} />,
+          tabBarIcon: ({ color, size }) => <MaterialIcons name="person" size={size} color={color} />,
         }}
       />
     </Tabs>

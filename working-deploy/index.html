@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <title>DushiLearn - Caribbean Language Learning</title>
+    <link rel="icon" href="./favicon.ico" />
+    
+    <!-- React Native Web Styles -->
+    <style id="expo-reset">
+      html, body { height: 100%; }
+      body { overflow: hidden; margin: 0; }
+      #root { display: flex; height: 100%; flex: 1; }
+    </style>
+    
+    <!-- Loading Styles -->
+    <style>
+      .loading-container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        background: linear-gradient(135deg, #00CED1, #FF6B35, #FFD700);
+        flex-direction: column;
+        color: white;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      }
+      
+      .loading-spinner {
+        width: 50px;
+        height: 50px;
+        border: 4px solid rgba(255,255,255,0.3);
+        border-radius: 50%;
+        border-top-color: white;
+        animation: spin 1s ease-in-out infinite;
+        margin-bottom: 20px;
+      }
+      
+      @keyframes spin {
+        to { transform: rotate(360deg); }
+      }
+      
+      .loading-text {
+        font-size: 1.2rem;
+        margin-bottom: 10px;
+      }
+      
+      .loading-subtext {
+        opacity: 0.8;
+        font-size: 0.9rem;
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- Loading Screen -->
+    <div id="loading" class="loading-container">
+      <div style="font-size: 3rem; margin-bottom: 20px;">🌴🦜</div>
+      <div class="loading-spinner"></div>
+      <div class="loading-text">Loading DushiLearn...</div>
+      <div class="loading-subtext">Your Caribbean language adventure awaits!</div>
+    </div>
+    
+    <!-- React App Root -->
+    <div id="root" style="display: none;"></div>
+    
+    <!-- Fallback for no JavaScript -->
+    <noscript>
+      <div style="display: flex; align-items: center; justify-content: center; height: 100vh; text-align: center; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: linear-gradient(135deg, #00CED1, #FF6B35, #FFD700); color: white;">
+        <div>
+          <h1>🌴 DushiLearn</h1>
+          <p>Please enable JavaScript to use this app.</p>
+        </div>
+      </div>
+    </noscript>
+
+    <!-- JavaScript Bundle -->
+    <script>
+      // Show loading screen initially
+      document.getElementById('loading').style.display = 'flex';
+      document.getElementById('root').style.display = 'none';
+      
+      // Hide loading screen when app loads
+      window.addEventListener('load', function() {
+        setTimeout(function() {
+          document.getElementById('loading').style.display = 'none';
+          document.getElementById('root').style.display = 'flex';
+        }, 1000);
+      });
+      
+      // Error handling
+      window.addEventListener('error', function(e) {
+        console.error('App loading error:', e);
+        document.getElementById('loading').innerHTML = `
+          <div style="text-align: center;">
+            <div style="font-size: 3rem; margin-bottom: 20px;">🌴🦜</div>
+            <h2>DushiLearn</h2>
+            <p>App is loading...</p>
+            <p style="opacity: 0.8; font-size: 0.9rem;">If this takes too long, please refresh the page.</p>
+          </div>
+        `;
+      });
+    </script>
+    
+    <!-- Main App Bundle - Update this path to match your actual bundle -->
+    <script src="./_expo/static/js/web/index-b22071d3cb3d159021c6005a8406fde4.js" defer></script>
+  </body>
+</html>

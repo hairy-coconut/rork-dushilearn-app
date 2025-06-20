@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyleSheet, Text, View, ScrollView, TouchableOpacity } from 'react-native';
 import { useLocalSearchParams, Stack, useRouter } from 'expo-router';
-import { ArrowLeft } from 'lucide-react-native';
+import { MaterialIcons } from '@expo/vector-icons';
 import Colors from '@/constants/colors';
 import { categories } from '@/constants/lessons';
 import { wordAudios } from '@/constants/audio';
@@ -34,7 +34,7 @@ export default function VocabularyScreen() {
           title: `${lessonData.title} Vocabulary`,
           headerLeft: () => (
             <TouchableOpacity onPress={() => router.back()}>
-              <ArrowLeft size={24} color={Colors.text} />
+              <MaterialIcons name="arrow-back" size={24} color={Colors.text} />
             </TouchableOpacity>
           ),
         }} 

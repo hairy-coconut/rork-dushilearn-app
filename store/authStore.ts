@@ -1,7 +1,5 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { supabase } from '@/lib/supabase';
 
 type User = {
   id: string;
@@ -46,7 +44,7 @@ export const useAuthStore = create<AuthState>()(
             };
             
             set({ user: testUser, isAuthenticated: true, isLoading: false });
-            await AsyncStorage.setItem('user_authenticated', 'true');
+            await storage.setItem('user_authenticated', 'true');
             console.log('Test login successful');
             return;
           }
@@ -88,7 +86,7 @@ export const useAuthStore = create<AuthState>()(
             };
             
             set({ user, isAuthenticated: true, isLoading: false });
-            await AsyncStorage.setItem('user_authenticated', 'true');
+            await storage.setItem('user_authenticated', 'true');
             console.log('Login successful');
           }
         } catch (error: any) {
@@ -113,7 +111,7 @@ export const useAuthStore = create<AuthState>()(
             };
             
             set({ user: testUser, isAuthenticated: true, isLoading: false });
-            await AsyncStorage.setItem('user_authenticated', 'true');
+            await storage.setItem('user_authenticated', 'true');
             console.log('Test signup successful');
             return;
           }
@@ -155,7 +153,7 @@ export const useAuthStore = create<AuthState>()(
             };
             
             set({ user, isAuthenticated: true, isLoading: false });
-            await AsyncStorage.setItem('user_authenticated', 'true');
+            await storage.setItem('user_authenticated', 'true');
             console.log('Signup successful');
           }
         } catch (error: any) {
@@ -171,7 +169,7 @@ export const useAuthStore = create<AuthState>()(
           if (error) throw error;
           
           set({ user: null, isAuthenticated: false, isLoading: false });
-          await AsyncStorage.setItem('user_authenticated', 'false');
+          await storage.setItem('user_authenticated', 'false');
         } catch (error: any) {
           console.error('Logout error:', error.message);
           set({ error: error.message, isLoading: false });
@@ -220,8 +218,14 @@ export const useAuthStore = create<AuthState>()(
       },
     }),
     {
-      name: 'dushilearn-auth',
-      storage: createJSONStorage(() => AsyncStorage),
+      name: 'auth-store',
+      storage: createJSONStorage(() => {
+        if (typeof window !== 'undefined') {
+          return window.localStorage;
+        } else {
+          return require('@react-native-async-storage/async-storage').default;
+        }
+      }),
     }
   )
 );

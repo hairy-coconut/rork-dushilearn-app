@@ -1,14 +1,13 @@
 import React, { useEffect } from 'react';
 import { StyleSheet, Text, View, ScrollView, TouchableOpacity, Switch, Alert, Image } from 'react-native';
 import { useRouter } from 'expo-router';
-import { Settings, Bell, Moon, Volume2, Globe, Award, LogOut, Share2 } from 'lucide-react-native';
+import { MaterialIcons } from '@expo/vector-icons';
 import Colors from '@/constants/colors';
 import ProfileHeader from '@/components/ProfileHeader';
 import { useProgressStore, getLevelProgress } from '@/store/progressStore';
 import { useBadgeStore } from '@/store/badgeStore';
 import { useAuthStore } from '@/store/authStore';
 import BadgeItem from '@/components/BadgeItem';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Platform } from 'react-native';
 
 export default function ProfileScreen() {
@@ -141,7 +140,7 @@ export default function ProfileScreen() {
             </ScrollView>
           ) : (
             <View style={styles.noBadgesContainer}>
-              <Award size={40} color={Colors.inactive} />
+              <MaterialIcons name="emoji-events" size={40} color={Colors.inactive} />
               <Text style={styles.noBadgesText}>Complete lessons to earn badges!</Text>
             </View>
           )}
@@ -153,7 +152,7 @@ export default function ProfileScreen() {
         style={styles.shareButton}
         onPress={handleShare}
       >
-        <Share2 size={20} color="white" />
+        <MaterialIcons name="share" size={20} color="white" />
         <Text style={styles.shareButtonText}>Share Your Progress</Text>
       </TouchableOpacity>
       
@@ -164,7 +163,7 @@ export default function ProfileScreen() {
         <View style={styles.settingsCard}>
           <TouchableOpacity style={styles.settingItem}>
             <View style={styles.settingLeft}>
-              <Settings size={20} color={Colors.text} />
+              <MaterialIcons name="settings" size={20} color={Colors.text} />
               <Text style={styles.settingText}>Edit Profile</Text>
             </View>
             <Text style={styles.settingAction}>Edit</Text>
@@ -172,7 +171,7 @@ export default function ProfileScreen() {
           
           <TouchableOpacity style={styles.settingItem}>
             <View style={styles.settingLeft}>
-              <Globe size={20} color={Colors.text} />
+              <MaterialIcons name="public" size={20} color={Colors.text} />
               <Text style={styles.settingText}>Language</Text>
             </View>
             <Text style={styles.settingAction}>English</Text>
@@ -186,7 +185,7 @@ export default function ProfileScreen() {
         <View style={styles.settingsCard}>
           <View style={styles.settingItem}>
             <View style={styles.settingLeft}>
-              <Bell size={20} color={Colors.text} />
+              <MaterialIcons name="notifications" size={20} color={Colors.text} />
               <Text style={styles.settingText}>Notifications</Text>
             </View>
             <Switch 
@@ -198,7 +197,7 @@ export default function ProfileScreen() {
           
           <View style={styles.settingItem}>
             <View style={styles.settingLeft}>
-              <Moon size={20} color={Colors.text} />
+              <MaterialIcons name="nightlight" size={20} color={Colors.text} />
               <Text style={styles.settingText}>Dark Mode</Text>
             </View>
             <Switch 
@@ -210,7 +209,7 @@ export default function ProfileScreen() {
           
           <View style={styles.settingItem}>
             <View style={styles.settingLeft}>
-              <Volume2 size={20} color={Colors.text} />
+              <MaterialIcons name="volume-up" size={20} color={Colors.text} />
               <Text style={styles.settingText}>Sound Effects</Text>
             </View>
             <Switch 
@@ -228,7 +227,7 @@ export default function ProfileScreen() {
         <View style={styles.settingsCard}>
           <TouchableOpacity style={styles.settingItem}>
             <View style={styles.settingLeft}>
-              <Award size={20} color={Colors.text} />
+              <MaterialIcons name="emoji-events" size={20} color={Colors.text} />
               <Text style={styles.settingText}>Daily Goal</Text>
             </View>
             <Text style={styles.settingAction}>1 lesson</Text>
@@ -241,7 +240,7 @@ export default function ProfileScreen() {
           style={styles.resetButton}
           onPress={handleResetProgress}
         >
-          <LogOut size={20} color={Colors.error} />
+          <MaterialIcons name="logout" size={20} color={Colors.error} />
           <Text style={styles.resetButtonText}>Reset Progress</Text>
         </TouchableOpacity>
         
@@ -249,7 +248,7 @@ export default function ProfileScreen() {
           style={styles.logoutButton}
           onPress={handleLogout}
         >
-          <LogOut size={20} color={Colors.text} />
+          <MaterialIcons name="logout" size={20} color={Colors.text} />
           <Text style={styles.logoutButtonText}>Log Out</Text>
         </TouchableOpacity>
       </View>

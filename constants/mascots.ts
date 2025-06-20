@@ -2,7 +2,7 @@
 export const mascots = {
   coco: {
     name: "Coco",
-    image: "https://pub-e001eb4506b145aa938b5d3badbff6a5.r2.dev/attachments/7niiuhw0axuryyp3p745i", // Updated mascot image URL
+    image: require('../assets/images/coco-mascot.png'),
     description: "Your friendly coconut guide to Papiamento!",
     greetings: [
       "Bon Bini! I'm Coco, your guide to Papiamento!",
@@ -14,7 +14,7 @@ export const mascots = {
   },
   lora: {
     name: "Lora",
-    image: "https://pub-e001eb4506b145aa938b5d3badbff6a5.r2.dev/attachments/7niiuhw0axuryyp3p745i", // Updated mascot image URL
+    image: require('../assets/images/lora-mascot.png'),
     description: "The chatty parrot who helps you perfect your pronunciation!",
     greetings: [
       "Bon dia! I'm Lora, and I'll help you sound like a local!",

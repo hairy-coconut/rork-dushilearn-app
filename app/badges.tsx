@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyleSheet, Text, View, ScrollView, TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router';
-import { ArrowLeft, Share2 } from 'lucide-react-native';
+import { MaterialIcons } from '@expo/vector-icons';
 import Colors from '@/constants/colors';
 import BadgeItem from '@/components/BadgeItem';
 import { useBadgeStore } from '@/store/badgeStore';
@@ -38,11 +38,11 @@ export default function BadgesScreen() {
     <View style={styles.container}>
       <View style={styles.header}>
         <TouchableOpacity onPress={() => router.back()}>
-          <ArrowLeft size={24} color={Colors.text} />
+          <MaterialIcons name="arrow-back" size={24} color={Colors.text} />
         </TouchableOpacity>
         <Text style={styles.title}>My Badges</Text>
         <TouchableOpacity onPress={handleShare}>
-          <Share2 size={24} color={Colors.primary} />
+          <MaterialIcons name="share" size={24} color={Colors.primary} />
         </TouchableOpacity>
       </View>
       

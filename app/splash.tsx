@@ -1,11 +1,12 @@
 import React, { useEffect, useRef } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, Image, Linking, Animated } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, Image, Linking, Animated, SafeAreaView } from 'react-native';
 import { useRouter } from 'expo-router';
 import Colors from '@/constants/colors';
 
 export default function SplashScreen() {
   const router = useRouter();
   const logoScale = useRef(new Animated.Value(0.9)).current;
+  const [isReady, setIsReady] = React.useState(false);
 
   useEffect(() => {
     // Gentle bounce animation for the logo
@@ -15,31 +16,40 @@ export default function SplashScreen() {
       tension: 40,
       useNativeDriver: true,
       delay: 300,
-    }).start();
+    }).start(() => {
+      setIsReady(true);
+    });
   }, []);
 
   const handleLoginPress = () => {
-    router.push('/login');
+    if (isReady) {
+      router.push('/login');
+    }
   };
 
   const handleSignUpPress = () => {
-    router.push('/signup');
+    if (isReady) {
+      router.push('/signup');
+    }
   };
 
   const handleTommyCoconutPress = () => {
-    Linking.openURL('https://www.tommycoconut.com');
+    if (isReady) {
+      Linking.openURL('https://www.tommycoconut.com');
+    }
   };
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <View style={styles.logoContainer}>
         <Animated.Image 
-          source={{ uri: 'https://pub-e001eb4506b145aa938b5d3badbff6a5.r2.dev/attachments/7niiuhw0axuryyp3p745i' }} 
+          source={require('../assets/images/coco-mascot.png')}
           style={[styles.logo, { transform: [{ scale: logoScale }] }]} 
           resizeMode="contain"
         />
         <Text style={styles.appName}>dushiLearn</Text>
         <Text style={styles.tagline}>Talk like a local. Learn with island vibes. 🌴</Text>
+        <Text style={styles.microCopy}>Get ready—your tropical adventure begins!</Text>
       </View>
 
       <View style={styles.buttonContainer}>
@@ -47,6 +57,7 @@ export default function SplashScreen() {
           style={[styles.button, styles.signupButton]} 
           onPress={handleSignUpPress}
           activeOpacity={0.8}
+          disabled={!isReady}
         >
           <Text style={styles.signupButtonText}>Sign Up</Text>
         </TouchableOpacity>
@@ -55,6 +66,7 @@ export default function SplashScreen() {
           style={[styles.button, styles.loginButton]} 
           onPress={handleLoginPress}
           activeOpacity={0.8}
+          disabled={!isReady}
         >
           <Text style={styles.loginButtonText}>Log In</Text>
         </TouchableOpacity>
@@ -63,12 +75,13 @@ export default function SplashScreen() {
       <TouchableOpacity 
         style={styles.creatorLink} 
         onPress={handleTommyCoconutPress}
+        disabled={!isReady}
       >
         <Text style={styles.creatorText}>
           Made with ❤️ by Tommy Coconut
         </Text>
       </TouchableOpacity>
-    </View>
+    </SafeAreaView>
   );
 }
 
@@ -145,5 +158,12 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: Colors.secondary,
     textDecorationLine: 'underline',
+  },
+  microCopy: {
+    fontSize: 16,
+    color: Colors.primary,
+    textAlign: 'center',
+    marginTop: 8,
+    fontWeight: '500',
   },
 });

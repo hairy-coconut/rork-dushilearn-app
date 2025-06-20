@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, View, TouchableOpacity, ScrollView } from 'react-native';
 import { useLocalSearchParams, Stack, useRouter } from 'expo-router';
-import { ArrowLeft, Check } from 'lucide-react-native';
+import { MaterialIcons } from '@expo/vector-icons';
 import Colors from '@/constants/colors';
 import { categories } from '@/constants/lessons';
 import { exerciseSets } from '@/constants/exercises';
@@ -12,7 +12,6 @@ import * as Haptics from 'expo-haptics';
 import { Platform } from 'react-native';
 import MascotMessage from '@/components/MascotMessage';
 import ConfettiEffect from '@/components/ConfettiEffect';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import BadgeItem from '@/components/BadgeItem';
 import { useBadgeStore } from '@/store/badgeStore';
 
@@ -123,7 +122,7 @@ export default function LessonScreen() {
           title: lessonData.title,
           headerLeft: () => (
             <TouchableOpacity onPress={() => router.back()}>
-              <ArrowLeft size={24} color={Colors.text} />
+              <MaterialIcons name="arrow-back" size={24} color={Colors.text} />
             </TouchableOpacity>
           ),
         }} 
@@ -157,7 +156,7 @@ export default function LessonScreen() {
           >
             <View style={styles.completionCard}>
               <View style={styles.completionIconContainer}>
-                <Check size={48} color="white" />
+                <MaterialIcons name="check" size={48} color="white" />
               </View>
               <Text style={styles.completionTitle}>Lesson Completed!</Text>
               <Text style={styles.completionScore}>You earned {score} XP</Text>
@@ -185,7 +184,7 @@ export default function LessonScreen() {
                       const badge = badges.find(b => b.id === badgeId);
                       if (badge) {
                         return (
-                          <View key={badgeId} style={styles.badgeItem}>
+                          <View key={badgeId} style={styles.badgePopAnim}>
                             <BadgeItem badge={badge} size="small" />
                           </View>
                         );
@@ -195,6 +194,27 @@ export default function LessonScreen() {
                   </View>
                 </View>
               )}
+              
+              {/* Motivational mascot message */}
+              <View style={styles.mascotMotivationContainer}>
+                <MascotMessage
+                  type={mascotType}
+                  lessonType={id as string}
+                  message={
+                    earnedBadges.includes('first_words') ?
+                      'Bon trabou! You unlocked your first badge!' :
+                    earnedBadges.includes('island_beginner') ?
+                      'Wepa! You are now an Island Beginner!' :
+                      'Great job! Keep going!'
+                  }
+                  autoHide={false}
+                />
+              </View>
+
+              {/* Streak counter highlight */}
+              <View style={styles.streakHighlightContainer}>
+                <Text style={styles.streakHighlightText}>🔥 Streak: {useProgressStore.getState().streak} days</Text>
+              </View>
               
               <TouchableOpacity 
                 style={styles.finishButton}
@@ -315,8 +335,30 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     justifyContent: 'center',
   },
-  badgeItem: {
+  badgePopAnim: {
+    transform: [{ scale: 1.15 }],
+    shadowColor: Colors.success,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 8,
     margin: 8,
+  },
+  mascotMotivationContainer: {
+    marginVertical: 16,
+    alignItems: 'center',
+  },
+  streakHighlightContainer: {
+    marginBottom: 16,
+    alignItems: 'center',
+    backgroundColor: Colors.success + '20',
+    borderRadius: 12,
+    padding: 8,
+  },
+  streakHighlightText: {
+    fontSize: 18,
+    color: Colors.success,
+    fontWeight: '700',
   },
   finishButton: {
     backgroundColor: Colors.primary,

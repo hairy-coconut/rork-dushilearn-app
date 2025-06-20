@@ -1,15 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, View, ScrollView, TouchableOpacity, Image, Alert } from 'react-native';
 import { useRouter } from 'expo-router';
-import { Play, Award, BookOpen } from 'lucide-react-native';
+import { MaterialIcons } from '@expo/vector-icons';
 import Colors from '@/constants/colors';
 import { categories } from '@/constants/lessons';
 import { useProgressStore, getLevelProgress } from '@/store/progressStore';
 import ProgressBar from '@/components/ProgressBar';
 import LessonCard from '@/components/LessonCard';
 import MascotMessage from '@/components/MascotMessage';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { supabase, isSupabaseConfigured } from '@/lib/supabase';
+import { supabase } from '@/utils/supabase';
 
 export default function HomeScreen() {
   const router = useRouter();
@@ -26,7 +25,7 @@ export default function HomeScreen() {
     // Load user preferences
     const loadPreferences = async () => {
       try {
-        const preferredMascot = await AsyncStorage.getItem('preferred_mascot');
+        const preferredMascot = await localStorage.getItem('preferred_mascot');
         if (preferredMascot) {
           setMascotType(preferredMascot as 'coco' | 'lora');
         }
@@ -107,12 +106,12 @@ export default function HomeScreen() {
       <View style={styles.header}>
         <View style={styles.userStats}>
           <View style={styles.statItem}>
-            <Award size={24} color={Colors.secondary} />
+            <MaterialIcons name="emoji-events" size={24} color={Colors.secondary} />
             <Text style={styles.statValue}>{streak}</Text>
             <Text style={styles.statLabel}>Day Streak</Text>
           </View>
           <View style={styles.statItem}>
-            <BookOpen size={24} color={Colors.primary} />
+            <MaterialIcons name="menu-book" size={24} color={Colors.primary} />
             <Text style={styles.statValue}>{level}</Text>
             <Text style={styles.statLabel}>Level</Text>
           </View>
@@ -137,7 +136,7 @@ export default function HomeScreen() {
         onPress={handleContinue}
         activeOpacity={0.8}
       >
-        <Play size={24} color="white" />
+        <MaterialIcons name="play-circle-outline" size={24} color="white" />
         <Text style={styles.continueButtonText}>Continue Learning</Text>
       </TouchableOpacity>
       

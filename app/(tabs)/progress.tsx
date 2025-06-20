@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet, Text, View, ScrollView } from 'react-native';
-import { BarChart2, Award, BookOpen, Calendar } from 'lucide-react-native';
+import { MaterialIcons } from '@expo/vector-icons';
 import Colors from '@/constants/colors';
 import { useProgressStore, getOverallProgress } from '@/store/progressStore';
 import { categories } from '@/constants/lessons';
@@ -36,25 +36,25 @@ export default function ProgressScreen() {
       {/* Overall stats */}
       <View style={styles.statsContainer}>
         <View style={styles.statCard}>
-          <BarChart2 size={24} color={Colors.primary} />
+          <MaterialIcons name="bar-chart" size={24} color={Colors.primary} />
           <Text style={styles.statValue}>{Math.round(overallProgress * 100)}%</Text>
           <Text style={styles.statLabel}>Overall Progress</Text>
         </View>
         
         <View style={styles.statCard}>
-          <Award size={24} color={Colors.secondary} />
+          <MaterialIcons name="emoji-events" size={24} color={Colors.secondary} />
           <Text style={styles.statValue}>{streak}</Text>
           <Text style={styles.statLabel}>Day Streak</Text>
         </View>
         
         <View style={styles.statCard}>
-          <BookOpen size={24} color={Colors.success} />
+          <MaterialIcons name="menu-book" size={24} color={Colors.success} />
           <Text style={styles.statValue}>{completedLessons.length}</Text>
           <Text style={styles.statLabel}>Lessons Completed</Text>
         </View>
         
         <View style={styles.statCard}>
-          <Calendar size={24} color={Colors.error} />
+          <MaterialIcons name="calendar-today" size={24} color={Colors.error} />
           <Text style={styles.statValue}>{xp}</Text>
           <Text style={styles.statLabel}>Total XP</Text>
         </View>

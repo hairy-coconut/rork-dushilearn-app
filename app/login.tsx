@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, Image, ActivityIndicator, Alert } from 'react-native';
 import { useRouter } from 'expo-router';
-import { ArrowLeft } from 'lucide-react-native';
+import { MaterialIcons } from '@expo/vector-icons';
 import Colors from '@/constants/colors';
 import { useAuthStore } from '@/store/authStore';
-import { supabase, isSupabaseConfigured } from '@/lib/supabase';
+import { supabase } from '@/utils/supabase';
 
 export default function LoginScreen() {
   const router = useRouter();
@@ -20,11 +20,6 @@ export default function LoginScreen() {
     // Check Supabase connection
     const checkSupabase = async () => {
       try {
-        if (!isSupabaseConfigured()) {
-          setSupabaseStatus('Not configured');
-          return;
-        }
-        
         // Test connection with a simple query
         const { data, error } = await supabase.from('profiles').select('count').limit(1);
         
@@ -72,7 +67,7 @@ export default function LoginScreen() {
     <View style={styles.container}>
       <View style={styles.header}>
         <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
-          <ArrowLeft size={24} color={Colors.text} />
+          <MaterialIcons name="arrow-back" size={24} color={Colors.text} />
         </TouchableOpacity>
         <Text style={styles.title}>Log In</Text>
         <View style={{ width: 24 }} />

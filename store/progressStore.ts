@@ -1,9 +1,8 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { categories } from '@/constants/lessons';
 import { useBadgeStore } from './badgeStore';
-import { supabase } from '@/lib/supabase';
+import { supabase } from '@/utils/supabase';
 import { useAuthStore } from './authStore';
 
 type LessonProgress = {
@@ -303,8 +302,14 @@ export const useProgressStore = create<ProgressState>()(
       },
     }),
     {
-      name: 'dushilearn-progress',
-      storage: createJSONStorage(() => AsyncStorage),
+      name: 'progress-store',
+      storage: createJSONStorage(() => {
+        if (typeof window !== 'undefined') {
+          return window.localStorage;
+        } else {
+          return require('@react-native-async-storage/async-storage').default;
+        }
+      }),
     }
   )
 );

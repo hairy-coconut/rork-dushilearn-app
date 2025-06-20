@@ -5,20 +5,13 @@ import superjson from "superjson";
 
 export const trpc = createTRPCReact<AppRouter>();
 
-const getBaseUrl = () => {
-  if (process.env.EXPO_PUBLIC_RORK_API_BASE_URL) {
-    return process.env.EXPO_PUBLIC_RORK_API_BASE_URL;
-  }
-
-  throw new Error(
-    "No base url found, please set EXPO_PUBLIC_RORK_API_BASE_URL"
-  );
-};
+// TODO: Set your API base URL here if needed, or remove trpcClient if not used
+const API_BASE_URL = "https://placeholder-url.com";
 
 export const trpcClient = trpc.createClient({
   links: [
     httpLink({
-      url: `${getBaseUrl()}/api/trpc`,
+      url: `${API_BASE_URL}/api/trpc`,
       transformer: superjson,
     }),
   ],

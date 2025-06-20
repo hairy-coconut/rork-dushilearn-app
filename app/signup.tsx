@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, Image, ScrollView, ActivityIndicator, Alert } from 'react-native';
 import { useRouter } from 'expo-router';
-import { ArrowLeft } from 'lucide-react-native';
+import { MaterialIcons } from '@expo/vector-icons';
 import Colors from '@/constants/colors';
 import { useAuthStore } from '@/store/authStore';
 
@@ -51,7 +51,7 @@ export default function SignupScreen() {
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
       <View style={styles.header}>
         <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
-          <ArrowLeft size={24} color={Colors.text} />
+          <MaterialIcons name="arrow-back" size={24} color={Colors.text} />
         </TouchableOpacity>
         <Text style={styles.title}>Sign Up</Text>
         <View style={{ width: 24 }} />
@@ -113,6 +113,10 @@ export default function SignupScreen() {
           By signing up, you agree to our Terms of Service and Privacy Policy
         </Text>
 
+        <Text style={styles.motivationText}>
+          Ready to dive into paradise? 🌊🌴
+        </Text>
+
         <TouchableOpacity 
           style={[styles.signupButton, isLoading && styles.disabledButton]} 
           onPress={handleSignup}
@@ -124,14 +128,6 @@ export default function SignupScreen() {
           ) : (
             <Text style={styles.signupButtonText}>Create Account</Text>
           )}
-        </TouchableOpacity>
-        
-        <TouchableOpacity 
-          style={styles.testSignupButton} 
-          onPress={handleTestSignup}
-          disabled={isLoading}
-        >
-          <Text style={styles.testSignupText}>Use Test Account</Text>
         </TouchableOpacity>
       </View>
 
@@ -225,6 +221,13 @@ const styles = StyleSheet.create({
     marginBottom: 24,
     textAlign: 'center',
   },
+  motivationText: {
+    fontSize: 16,
+    color: Colors.primary,
+    textAlign: 'center',
+    marginBottom: 12,
+    fontWeight: '500',
+  },
   signupButton: {
     backgroundColor: Colors.primary,
     borderRadius: 16,
@@ -245,16 +248,6 @@ const styles = StyleSheet.create({
   },
   disabledButton: {
     opacity: 0.7,
-  },
-  testSignupButton: {
-    alignItems: 'center',
-    padding: 12,
-    marginTop: 16,
-  },
-  testSignupText: {
-    color: Colors.secondary,
-    fontSize: 16,
-    fontWeight: '500',
   },
   footer: {
     flexDirection: 'row',

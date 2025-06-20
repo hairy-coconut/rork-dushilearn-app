@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, View, Image, Animated, TouchableOpacity } from 'react-native';
-import { X } from 'lucide-react-native';
+import { MaterialIcons } from '@expo/vector-icons';
 import Colors from '@/constants/colors';
 import { mascots, mascotTips } from '@/constants/mascots';
 
@@ -68,7 +68,7 @@ export default function MascotMessage({
           <Text style={styles.message}>{getMessage()}</Text>
         </View>
         <TouchableOpacity style={styles.closeButton} onPress={onDismiss}>
-          <X size={16} color={Colors.textLight} />
+          <MaterialIcons name="close" size={24} color={Colors.text} />
         </TouchableOpacity>
       </View>
     </Animated.View>

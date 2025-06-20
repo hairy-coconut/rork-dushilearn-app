@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { StyleSheet, TouchableOpacity, ActivityIndicator } from 'react-native';
-import { Volume2 } from 'lucide-react-native';
+import { MaterialIcons } from '@expo/vector-icons';
 import Colors from '@/constants/colors';
 import { playAudio } from '@/constants/audio';
 
@@ -34,7 +34,7 @@ export default function AudioButton({
       {isPlaying ? (
         <ActivityIndicator size="small" color={color} />
       ) : (
-        <Volume2 size={size} color={color} />
+        <MaterialIcons name="volume-up" size={size} color={color} />
       )}
     </TouchableOpacity>
   );

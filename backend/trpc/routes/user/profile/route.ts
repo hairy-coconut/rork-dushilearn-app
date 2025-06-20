@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { publicProcedure } from "@/backend/trpc/create-context";
-import { supabase } from "@/lib/supabase";
+import { supabase } from '@/utils/supabase';
 
 export const getUserProfileProcedure = publicProcedure
   .input(z.object({ userId: z.string() }))

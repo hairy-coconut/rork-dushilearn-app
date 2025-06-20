@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
+import React, { useState, useRef } from 'react';
+import { StyleSheet, Text, View, TouchableOpacity, Animated } from 'react-native';
 import Colors from '@/constants/colors';
 import { Exercise } from '@/constants/exercises';
 import AudioButton from './AudioButton';
 import { wordAudios } from '@/constants/audio';
+import MascotMessage from './MascotMessage';
+import * as Haptics from 'expo-haptics';
 
 type ExerciseCardProps = {
   exercise: Exercise;
@@ -13,6 +15,9 @@ type ExerciseCardProps = {
 export default function ExerciseCard({ exercise, onAnswer }: ExerciseCardProps) {
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
   const [showFeedback, setShowFeedback] = useState(false);
+  const [showOopsMascot, setShowOopsMascot] = useState(false);
+  const cardAnim = useRef(new Animated.Value(1)).current;
+  const shakeAnim = useRef(new Animated.Value(0)).current;
   
   // Find audio for this exercise question if available
   const findAudio = () => {
@@ -32,8 +37,29 @@ export default function ExerciseCard({ exercise, onAnswer }: ExerciseCardProps) 
   const handleSelectAnswer = (answer: string) => {
     setSelectedAnswer(answer);
     setShowFeedback(true);
-    
     const isCorrect = answer === exercise.correctAnswer;
+
+    // Haptic feedback
+    if (isCorrect) {
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+      // Bounce animation
+      Animated.sequence([
+        Animated.spring(cardAnim, { toValue: 1.08, useNativeDriver: true }),
+        Animated.spring(cardAnim, { toValue: 1, friction: 4, useNativeDriver: true }),
+      ]).start();
+    } else {
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
+      // Shake animation
+      Animated.sequence([
+        Animated.timing(shakeAnim, { toValue: 1, duration: 60, useNativeDriver: true }),
+        Animated.timing(shakeAnim, { toValue: -1, duration: 60, useNativeDriver: true }),
+        Animated.timing(shakeAnim, { toValue: 1, duration: 60, useNativeDriver: true }),
+        Animated.timing(shakeAnim, { toValue: 0, duration: 60, useNativeDriver: true }),
+      ]).start();
+      setShowOopsMascot(true);
+      setTimeout(() => setShowOopsMascot(false), 1200);
+    }
+
     setTimeout(() => {
       onAnswer(isCorrect);
       setSelectedAnswer(null);
@@ -134,7 +160,19 @@ export default function ExerciseCard({ exercise, onAnswer }: ExerciseCardProps) 
   };
   
   return (
-    <View style={styles.container}>
+    <Animated.View
+      style={[
+        styles.container,
+        {
+          transform: [
+            { scale: cardAnim },
+            { translateX: shakeAnim.interpolate({ inputRange: [-1, 1], outputRange: [-10, 10] }) },
+          ],
+          shadowColor: showFeedback && selectedAnswer === exercise.correctAnswer ? Colors.success : '#000',
+          shadowOpacity: showFeedback ? 0.25 : 0.1,
+        },
+      ]}
+    >
       <View style={styles.questionContainer}>
         <Text style={styles.question}>{exercise.question}</Text>
         {audioData && (
@@ -159,7 +197,12 @@ export default function ExerciseCard({ exercise, onAnswer }: ExerciseCardProps) 
           </Text>
         </View>
       )}
-    </View>
+      {showOopsMascot && (
+        <View style={styles.oopsMascotContainer}>
+          <MascotMessage type="coco" lessonType="oops" message="Oops! Try again!" autoHide />
+        </View>
+      )}
+    </Animated.View>
   );
 }
 
@@ -229,5 +272,13 @@ const styles = StyleSheet.create({
   },
   incorrectFeedback: {
     color: Colors.error,
+  },
+  oopsMascotContainer: {
+    position: 'absolute',
+    top: -60,
+    left: 0,
+    right: 0,
+    alignItems: 'center',
+    zIndex: 10,
   },
 });

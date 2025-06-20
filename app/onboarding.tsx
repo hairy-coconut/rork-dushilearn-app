@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
 import { StyleSheet, Text, View, TouchableOpacity, Image, ScrollView } from 'react-native';
 import { useRouter } from 'expo-router';
-import { ChevronRight } from 'lucide-react-native';
+import { MaterialIcons } from '@expo/vector-icons';
 import Colors from '@/constants/colors';
 import { mascots } from '@/constants/mascots';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 type LearningReason = 'tourist' | 'expat' | 'local' | 'romance' | 'other';
 type PreferredMascot = 'coco' | 'lora';
@@ -34,6 +33,9 @@ export default function OnboardingScreen() {
   
   const renderStep1 = () => (
     <View style={styles.stepContainer}>
+      <Text style={styles.microCopy}>
+        Tell us why you're learning—We'll craft your perfect Papiamentu journey!
+      </Text>
       <Text style={styles.stepTitle}>Why are you learning Papiamento?</Text>
       <Text style={styles.stepDescription}>
         We will personalize your experience based on your goals.
@@ -72,105 +74,97 @@ export default function OnboardingScreen() {
         disabled={!learningReason}
       >
         <Text style={styles.nextButtonText}>Continue</Text>
-        <ChevronRight size={20} color="white" />
+        <MaterialIcons name="chevron-right" size={20} color="white" />
       </TouchableOpacity>
     </View>
   );
   
   const renderStep2 = () => (
     <View style={styles.stepContainer}>
-      <Text style={styles.stepTitle}>Choose your guide</Text>
-      <Text style={styles.stepDescription}>
-        Who would you like to learn with on your Papiamento journey?
-      </Text>
-      
-      <View style={styles.mascotsContainer}>
-        <TouchableOpacity
-          style={[
-            styles.mascotOption,
-            preferredMascot === 'coco' && styles.selectedMascot,
-          ]}
-          onPress={() => setPreferredMascot('coco')}
-        >
+      <Text style={styles.stepTitle}>Meet Your Mascots!</Text>
+      <View style={styles.mascotsTogetherContainer}>
+        <View style={styles.mascotIntroBox}>
           <Image
-            source={{ uri: mascots.coco.image }}
+            source={require('../assets/images/coco-mascot.png')}
             style={styles.mascotImage}
           />
-          <Text style={styles.mascotName}>Coco</Text>
+          <Text style={styles.mascotName}>🥥 Coco</Text>
           <Text style={styles.mascotDescription}>
-            Your friendly coconut guide to Papiamento!
+            Hey! I'm Coco 🌴—your laid-back island buddy. I'll keep your Papiamentu learning relaxed, fun, and full of good vibes!
           </Text>
-        </TouchableOpacity>
-        
-        <TouchableOpacity
-          style={[
-            styles.mascotOption,
-            preferredMascot === 'lora' && styles.selectedMascot,
-          ]}
-          onPress={() => setPreferredMascot('lora')}
-        >
+        </View>
+        <View style={styles.mascotIntroBox}>
           <Image
-            source={{ uri: mascots.lora.image }}
+            source={require('../assets/images/lora-mascot.png')}
             style={styles.mascotImage}
           />
-          <Text style={styles.mascotName}>Lora</Text>
+          <Text style={styles.mascotName}>🦜 Lora</Text>
           <Text style={styles.mascotDescription}>
-            The chatty parrot who helps you perfect your pronunciation!
+            Bon dia! I'm Lora 🦜—the chatty parrot who's gonna help your pronunciation soar. Get ready to speak like a true local!
           </Text>
-        </TouchableOpacity>
+        </View>
       </View>
-      
+      <Text style={styles.mascotMicroCopy}>
+        Both Coco and Lora will join you on your learning adventure!
+      </Text>
       <TouchableOpacity
-        style={[styles.nextButton, !preferredMascot && styles.disabledButton]}
-        onPress={() => preferredMascot && setStep(3)}
-        disabled={!preferredMascot}
+        style={styles.nextButton}
+        onPress={() => setStep(3)}
       >
         <Text style={styles.nextButtonText}>Continue</Text>
-        <ChevronRight size={20} color="white" />
+        <MaterialIcons name="chevron-right" size={20} color="white" />
       </TouchableOpacity>
     </View>
   );
   
   const renderStep3 = () => (
     <View style={styles.stepContainer}>
+      <Text style={styles.goalPrompt}>
+        Pick your daily learning goal and keep your island vibes flowing!
+      </Text>
       <Text style={styles.stepTitle}>Set your daily goal</Text>
       <Text style={styles.stepDescription}>
         How many minutes would you like to practice each day?
       </Text>
-      
       <View style={styles.goalsContainer}>
-        {[5, 10, 15, 20].map((minutes) => (
-          <TouchableOpacity
-            key={minutes}
-            style={[
-              styles.goalOption,
-              dailyGoal === minutes && styles.selectedGoal,
-            ]}
-            onPress={() => setDailyGoal(minutes as DailyGoal)}
-          >
-            <Text style={[
-              styles.goalMinutes,
-              dailyGoal === minutes && styles.selectedGoalText,
-            ]}>
-              {minutes}
-            </Text>
-            <Text style={[
-              styles.goalLabel,
-              dailyGoal === minutes && styles.selectedGoalText,
-            ]}>
-              minutes
-            </Text>
-          </TouchableOpacity>
-        ))}
+        {[5, 10, 15, 20].map((minutes) => {
+          let emoji = '🥥';
+          if (minutes === 10) emoji = '🌴';
+          if (minutes === 15) emoji = '🏖️';
+          if (minutes === 20) emoji = '🐢';
+          return (
+            <TouchableOpacity
+              key={minutes}
+              style={[
+                styles.goalOption,
+                dailyGoal === minutes && styles.selectedGoal,
+              ]}
+              onPress={() => setDailyGoal(minutes as DailyGoal)}
+            >
+              <Text style={styles.goalEmoji}>{emoji}</Text>
+              <Text style={[
+                styles.goalMinutes,
+                dailyGoal === minutes && styles.selectedGoalText,
+              ]}>
+                {minutes}
+              </Text>
+              <Text style={[
+                styles.goalLabel,
+                dailyGoal === minutes && styles.selectedGoalText,
+              ]}>
+                minutes
+              </Text>
+            </TouchableOpacity>
+          );
+        })}
       </View>
-      
       <TouchableOpacity
         style={[styles.nextButton, !dailyGoal && styles.disabledButton]}
         onPress={handleComplete}
         disabled={!dailyGoal}
       >
         <Text style={styles.nextButtonText}>Start Learning</Text>
-        <ChevronRight size={20} color="white" />
+        <MaterialIcons name="chevron-right" size={20} color="white" />
       </TouchableOpacity>
     </View>
   );
@@ -309,39 +303,41 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.inactive,
     opacity: 0.7,
   },
-  mascotsContainer: {
+  mascotsTogetherContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 30,
+    justifyContent: 'space-around',
+    alignItems: 'flex-start',
+    marginBottom: 16,
   },
-  mascotOption: {
-    width: '48%',
-    backgroundColor: Colors.card,
-    borderRadius: 16,
-    padding: 16,
+  mascotIntroBox: {
+    flex: 1,
     alignItems: 'center',
-    borderWidth: 2,
-    borderColor: 'transparent',
-  },
-  selectedMascot: {
-    borderColor: Colors.primary,
-    backgroundColor: Colors.primary + '10', // 10% opacity
+    marginHorizontal: 8,
   },
   mascotImage: {
     width: 100,
     height: 100,
-    marginBottom: 16,
+    borderRadius: 50,
+    marginBottom: 8,
   },
   mascotName: {
     fontSize: 18,
     fontWeight: '700',
-    color: Colors.text,
-    marginBottom: 8,
+    color: Colors.primary,
+    marginBottom: 4,
   },
   mascotDescription: {
     fontSize: 14,
-    color: Colors.textLight,
+    color: Colors.text,
     textAlign: 'center',
+    marginBottom: 8,
+  },
+  mascotMicroCopy: {
+    fontSize: 15,
+    color: Colors.success,
+    textAlign: 'center',
+    marginBottom: 18,
+    fontWeight: '500',
   },
   goalsContainer: {
     flexDirection: 'row',
@@ -372,5 +368,23 @@ const styles = StyleSheet.create({
   },
   selectedGoalText: {
     color: 'white',
+  },
+  microCopy: {
+    fontSize: 16,
+    color: Colors.primary,
+    textAlign: 'center',
+    marginBottom: 10,
+    fontWeight: '500',
+  },
+  goalPrompt: {
+    fontSize: 16,
+    color: Colors.primary,
+    textAlign: 'center',
+    marginBottom: 10,
+    fontWeight: '500',
+  },
+  goalEmoji: {
+    fontSize: 28,
+    marginBottom: 2,
   },
 });
