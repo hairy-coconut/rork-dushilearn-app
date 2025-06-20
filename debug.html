@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>DushiLearn Debug</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .error { color: red; }
+        .success { color: green; }
+    </style>
+</head>
+<body>
+    <h1>DushiLearn Debug Page</h1>
+    <div id="status">Testing...</div>
+    
+    <script>
+        const status = document.getElementById('status');
+        
+        // Test 1: Basic JavaScript
+        status.innerHTML += '<br>✅ JavaScript is working';
+        
+        // Test 2: Check if React is available
+        try {
+            if (typeof React !== 'undefined') {
+                status.innerHTML += '<br>✅ React is available';
+            } else {
+                status.innerHTML += '<br>❌ React not found';
+            }
+        } catch(e) {
+            status.innerHTML += '<br>❌ React error: ' + e.message;
+        }
+        
+        // Test 3: Load the main bundle and catch errors
+        const script = document.createElement('script');
+        script.src = '/_expo/static/js/web/index-bc73e4e1efb73c0d27e0c105063a23a7.js';
+        script.onload = function() {
+            status.innerHTML += '<br>✅ Main bundle loaded';
+        };
+        script.onerror = function() {
+            status.innerHTML += '<br>❌ Main bundle failed to load';
+        };
+        
+        // Catch any global errors
+        window.onerror = function(msg, url, line) {
+            status.innerHTML += '<br>❌ Error: ' + msg + ' at line ' + line;
+        };
+        
+        document.head.appendChild(script);
+    </script>
+</body>
+</html>
