@@ -48,6 +48,18 @@ const server = http.createServer((req, res) => {
     return;
   }
 
+  // Health check endpoint for Railway
+  if (req.url === '/health' || req.url === '/healthz') {
+    res.writeHead(200, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify({ 
+      status: 'ok', 
+      app: 'DushiLearn',
+      timestamp: new Date().toISOString(),
+      port: PORT
+    }));
+    return;
+  }
+
   let filePath = path.join(__dirname, 'dist', req.url === '/' ? 'index.html' : req.url);
   
   // Check if file exists
@@ -81,8 +93,35 @@ const server = http.createServer((req, res) => {
   });
 });
 
-server.listen(PORT, '0.0.0.0', () => {
+server.on('error', (err) => {
+  console.error('Server error:', err);
+  if (err.code === 'EADDRINUSE') {
+    console.log(`Port ${PORT} is already in use`);
+    process.exit(1);
+  }
+});
+
+server.listen(PORT, () => {
   console.log(`DushiLearn server running on port ${PORT}`);
+  console.log(`Environment: ${process.env.NODE_ENV}`);
+  console.log(`Host: 0.0.0.0:${PORT}`);
+});
+
+// Graceful shutdown
+process.on('SIGTERM', () => {
+  console.log('Received SIGTERM, shutting down gracefully');
+  server.close(() => {
+    console.log('Server closed');
+    process.exit(0);
+  });
+});
+
+process.on('SIGINT', () => {
+  console.log('Received SIGINT, shutting down gracefully');
+  server.close(() => {
+    console.log('Server closed');
+    process.exit(0);
+  });
 });
 
 }
