@@ -3,8 +3,7 @@ module.exports = function (api) {
   return {
     presets: [
       ['babel-preset-expo', {
-        jsxRuntime: 'automatic',
-        jsxImportSource: 'react',
+        jsxRuntime: 'classic',
       }]
     ],
     plugins: [
