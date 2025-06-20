@@ -3,8 +3,8 @@ import { View, Text, StyleSheet, ScrollView, ActivityIndicator, TouchableOpacity
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useLocalSearchParams, Stack } from 'expo-router';
 import Colors from '../constants/colors';
-import { Achievement, getAchievementById } from './utils/achievements';
-import { shareAchievement } from './utils/achievementSharing';
+import { Achievement, getAchievementById } from '../utils/achievements';
+import { shareAchievement } from '../utils/achievementSharing';
 
 export default function AchievementDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();

@@ -11,7 +11,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import * as Haptics from 'expo-haptics';
 import Colors from '../constants/colors';
 import { typography } from '../constants/typography';
-import { ComboState, COMBO_TIERS, comboManager } from './utils/comboSystem';
+import { ComboState, COMBO_TIERS, comboManager } from '../utils/comboSystem';
 
 interface ComboDisplayProps {
   comboState: ComboState;

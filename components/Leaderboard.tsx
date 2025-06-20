@@ -9,7 +9,7 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { socialApi } from './utils/supabase';
+import { socialApi } from '../utils/supabase';
 import Colors from '../constants/colors';
 
 interface LeaderboardEntry {

@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { View, Text, StyleSheet, Animated, TouchableOpacity } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import Colors from '../constants/colors';
-import { Achievement } from './utils/achievements';
+import { Achievement } from '../utils/achievements';
 import { router } from 'expo-router';
 
 interface AchievementNotificationProps {

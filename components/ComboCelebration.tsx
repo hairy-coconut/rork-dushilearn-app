@@ -12,7 +12,7 @@ import * as Haptics from 'expo-haptics';
 import ConfettiCannon from 'react-native-confetti-cannon';
 import Colors from '../constants/colors';
 import { typography } from '../constants/typography';
-import { COMBO_TIERS } from './utils/comboSystem';
+import { COMBO_TIERS } from '../utils/comboSystem';
 
 interface ComboCelebrationProps {
   visible: boolean;

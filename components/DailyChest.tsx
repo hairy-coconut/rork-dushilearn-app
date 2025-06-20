@@ -10,11 +10,11 @@ import {
 } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
-import { ChestState, getChestState, updateChestState } from './utils/chestStorage';
+import { ChestState, getChestState, updateChestState } from '../utils/chestStorage';
 import { getRandomReward, Reward } from '../constants/dailyChest';
 import Colors from '../constants/colors';
-import soundManager from './utils/soundEffects';
-import { usePremiumFeature } from './hooks/useFeatureAccess';
+import soundManager from '../utils/soundEffects';
+import { usePremiumFeature } from '../hooks/useFeatureAccess';
 import PremiumFeatureGate from './PremiumFeatureGate';
 
 const { width } = Dimensions.get('window');
