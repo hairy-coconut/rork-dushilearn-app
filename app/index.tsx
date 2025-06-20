@@ -2,11 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { View, StyleSheet, TouchableOpacity, Text } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
-import DailyChest from '@/components/DailyChest';
-import StreakCalendar from '@/components/StreakCalendar';
-import ChestTutorial from '@/components/ChestTutorial';
-import { getChestState } from '@/utils/chestStorage';
-import Colors from '@/constants/colors';
+import DailyChest from '../components/DailyChest';
+import StreakCalendar from '../components/StreakCalendar';
+import ChestTutorial from '../components/ChestTutorial';
+import { getChestState } from '../utils/chestStorage';
+import Colors from '../constants/colors';
 
 export default function HomeScreen() {
   const router = useRouter();

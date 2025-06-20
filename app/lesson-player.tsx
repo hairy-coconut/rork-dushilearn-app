@@ -11,7 +11,7 @@ import {
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { BlurView } from 'expo-blur';
-import { useTheme } from '../contexts/ThemeContext';
+import Colors from './constants/colors';
 import { useUser } from '../contexts/UserContext';
 import { LessonContent, LessonType } from '../utils/lessonTypes';
 import * as Haptics from 'expo-haptics';
@@ -72,7 +72,7 @@ export default function LessonPlayerScreen({ lessonId }: LessonPlayerProps) {
             case 'multiple_choice':
                 return (
                     <View style={styles.questionContainer}>
-                        <Text style={[styles.questionText, { color: theme.colors.text }]}>
+                        <Text style={[styles.questionText, { color: Colors.text }]}>
                             {lesson.content.text}
                         </Text>
                         <View style={styles.optionsContainer}>
@@ -82,13 +82,13 @@ export default function LessonPlayerScreen({ lessonId }: LessonPlayerProps) {
                                     style={[
                                         styles.optionButton,
                                         {
-                                            backgroundColor: theme.colors.card,
-                                            borderColor: theme.colors.border,
+                                            backgroundColor: Colors.card,
+                                            borderColor: Colors.border,
                                         },
                                     ]}
                                     onPress={() => handleAnswer(option)}
                                 >
-                                    <Text style={[styles.optionText, { color: theme.colors.text }]}>
+                                    <Text style={[styles.optionText, { color: Colors.text }]}>
                                         {option}
                                     </Text>
                                 </TouchableOpacity>
@@ -100,7 +100,7 @@ export default function LessonPlayerScreen({ lessonId }: LessonPlayerProps) {
             case 'fill_blank':
                 return (
                     <View style={styles.questionContainer}>
-                        <Text style={[styles.questionText, { color: theme.colors.text }]}>
+                        <Text style={[styles.questionText, { color: Colors.text }]}>
                             {lesson.content.text?.replace('_____', '_____')}
                         </Text>
                         <View style={styles.optionsContainer}>
@@ -110,13 +110,13 @@ export default function LessonPlayerScreen({ lessonId }: LessonPlayerProps) {
                                     style={[
                                         styles.optionButton,
                                         {
-                                            backgroundColor: theme.colors.card,
-                                            borderColor: theme.colors.border,
+                                            backgroundColor: Colors.card,
+                                            borderColor: Colors.border,
                                         },
                                     ]}
                                     onPress={() => handleAnswer(option)}
                                 >
-                                    <Text style={[styles.optionText, { color: theme.colors.text }]}>
+                                    <Text style={[styles.optionText, { color: Colors.text }]}>
                                         {option}
                                     </Text>
                                 </TouchableOpacity>
@@ -128,7 +128,7 @@ export default function LessonPlayerScreen({ lessonId }: LessonPlayerProps) {
             case 'word_order':
                 return (
                     <View style={styles.questionContainer}>
-                        <Text style={[styles.questionText, { color: theme.colors.text }]}>
+                        <Text style={[styles.questionText, { color: Colors.text }]}>
                             Arrange the words in the correct order
                         </Text>
                         <View style={styles.wordOrderContainer}>
@@ -138,12 +138,12 @@ export default function LessonPlayerScreen({ lessonId }: LessonPlayerProps) {
                                     style={[
                                         styles.wordButton,
                                         {
-                                            backgroundColor: theme.colors.card,
-                                            borderColor: theme.colors.border,
+                                            backgroundColor: Colors.card,
+                                            borderColor: Colors.border,
                                         },
                                     ]}
                                 >
-                                    <Text style={[styles.wordText, { color: theme.colors.text }]}>
+                                    <Text style={[styles.wordText, { color: Colors.text }]}>
                                         {word}
                                     </Text>
                                 </TouchableOpacity>
@@ -155,7 +155,7 @@ export default function LessonPlayerScreen({ lessonId }: LessonPlayerProps) {
             default:
                 return (
                     <View style={styles.questionContainer}>
-                        <Text style={[styles.questionText, { color: theme.colors.text }]}>
+                        <Text style={[styles.questionText, { color: Colors.text }]}>
                             Lesson type not implemented yet
                         </Text>
                     </View>
@@ -173,9 +173,9 @@ export default function LessonPlayerScreen({ lessonId }: LessonPlayerProps) {
                 <MaterialCommunityIcons
                     name={isCorrect ? 'check-circle' : 'close-circle'}
                     size={48}
-                    color={isCorrect ? theme.colors.success : theme.colors.error}
+                    color={isCorrect ? Colors.success : Colors.error}
                 />
-                <Text style={[styles.feedbackText, { color: theme.colors.text }]}>
+                <Text style={[styles.feedbackText, { color: Colors.text }]}>
                     {isCorrect ? 'Correct!' : 'Try again!'}
                 </Text>
             </BlurView>
@@ -184,16 +184,16 @@ export default function LessonPlayerScreen({ lessonId }: LessonPlayerProps) {
 
     if (loading) {
         return (
-            <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
-                <ActivityIndicator size="large" color={theme.colors.primary} />
+            <View style={[styles.container, { backgroundColor: Colors.background }]}>
+                <ActivityIndicator size="large" color={Colors.primary} />
             </View>
         );
     }
 
     if (!lesson) {
         return (
-            <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
-                <Text style={[styles.errorText, { color: theme.colors.text }]}>
+            <View style={[styles.container, { backgroundColor: Colors.background }]}>
+                <Text style={[styles.errorText, { color: Colors.text }]}>
                     Lesson not found
                 </Text>
             </View>
@@ -201,9 +201,9 @@ export default function LessonPlayerScreen({ lessonId }: LessonPlayerProps) {
     }
 
     return (
-        <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
+        <View style={[styles.container, { backgroundColor: Colors.background }]}>
             <LinearGradient
-                colors={[theme.colors.primary, theme.colors.secondary]}
+                colors={[Colors.primary, Colors.secondary]}
                 style={styles.header}
             >
                 <TouchableOpacity
@@ -235,13 +235,13 @@ export default function LessonPlayerScreen({ lessonId }: LessonPlayerProps) {
                 {renderFeedback()}
 
                 {lesson.content.cultural_notes && (
-                    <View style={[styles.culturalNote, { backgroundColor: theme.colors.card }]}>
+                    <View style={[styles.culturalNote, { backgroundColor: Colors.card }]}>
                         <MaterialCommunityIcons
                             name="information"
                             size={24}
-                            color={theme.colors.primary}
+                            color={Colors.primary}
                         />
-                        <Text style={[styles.culturalNoteText, { color: theme.colors.text }]}>
+                        <Text style={[styles.culturalNoteText, { color: Colors.text }]}>
                             {lesson.content.cultural_notes}
                         </Text>
                     </View>

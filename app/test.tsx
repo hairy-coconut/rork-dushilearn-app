@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import { useTheme } from '../contexts/ThemeContext';
+import Colors from './constants/colors';
 import { TEST_LESSON } from '../utils/testData';
 import { TEST_STORY } from '../utils/testData';
 import { router } from 'expo-router';
@@ -23,20 +23,20 @@ export default function TestScreen() {
     };
 
     return (
-        <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
-            <Text style={[styles.title, { color: theme.colors.text }]}>
+        <View style={[styles.container, { backgroundColor: Colors.background }]}>
+            <Text style={[styles.title, { color: Colors.text }]}>
                 Test Components
             </Text>
 
             <TouchableOpacity
-                style={[styles.button, { backgroundColor: theme.colors.primary }]}
+                style={[styles.button, { backgroundColor: Colors.primary }]}
                 onPress={handleLessonPress}
             >
                 <Text style={styles.buttonText}>Test Lesson Player</Text>
             </TouchableOpacity>
 
             <TouchableOpacity
-                style={[styles.button, { backgroundColor: theme.colors.secondary }]}
+                style={[styles.button, { backgroundColor: Colors.secondary }]}
                 onPress={handleStoryPress}
             >
                 <Text style={styles.buttonText}>Test Story Viewer</Text>

@@ -8,7 +8,7 @@ import {
   Animated,
 } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import Colors from '@/constants/colors';
+import Colors from '../constants/colors';
 
 const { width, height } = Dimensions.get('window');
 

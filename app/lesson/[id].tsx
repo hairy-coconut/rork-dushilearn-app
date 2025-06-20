@@ -2,18 +2,24 @@ import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, View, TouchableOpacity, ScrollView } from 'react-native';
 import { useLocalSearchParams, Stack, useRouter } from 'expo-router';
 import { MaterialIcons } from '@expo/vector-icons';
-import Colors from '@/constants/colors';
-import { categories } from '@/constants/lessons';
-import { exerciseSets } from '@/constants/exercises';
-import ExerciseCard from '@/components/ExerciseCard';
-import ProgressBar from '@/components/ProgressBar';
-import { useProgressStore } from '@/store/progressStore';
+import Colors from '../constants/colors';
+import { categories } from '../constants/lessons';
+import { exerciseSets } from '../constants/exercises';
+import ExerciseCard from '../components/ExerciseCard';
+import ProgressBar from '../components/ProgressBar';
+import { useProgressStore } from '../store/progressStore';
 import * as Haptics from 'expo-haptics';
 import { Platform } from 'react-native';
-import MascotMessage from '@/components/MascotMessage';
-import ConfettiEffect from '@/components/ConfettiEffect';
-import BadgeItem from '@/components/BadgeItem';
-import { useBadgeStore } from '@/store/badgeStore';
+import MascotMessage from '../components/MascotMessage';
+import ConfettiEffect from '../components/ConfettiEffect';
+import BadgeItem from '../components/BadgeItem';
+import { useBadgeStore } from '../store/badgeStore';
+import ComboDisplay from '../components/ComboDisplay';
+import ComboCelebration from '../components/ComboCelebration';
+import { comboManager, ComboState, COMBO_TIERS } from '../utils/comboSystem';
+import { xpBoostManager } from '../utils/xpBoosts';
+import { mascotPersonalityManager } from '../utils/mascotPersonality';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function LessonScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -29,6 +35,13 @@ export default function LessonScreen() {
   const [showConfetti, setShowConfetti] = useState(false);
   const [earnedBadges, setEarnedBadges] = useState<string[]>([]);
   
+  // Gamification states
+  const [comboState, setComboState] = useState<ComboState | null>(null);
+  const [xpMultiplier, setXpMultiplier] = useState(1);
+  const [showComboDisplay, setShowComboDisplay] = useState(false);
+  const [showComboCelebration, setShowComboCelebration] = useState(false);
+  const [comboCelebrationData, setComboCelebrationData] = useState<any>(null);
+  
   // Find the lesson data
   const lessonData = categories
     .flatMap(category => category.lessons)
@@ -40,7 +53,7 @@ export default function LessonScreen() {
   // Calculate progress
   const progress = exercises.length > 0 ? currentExerciseIndex / exercises.length : 0;
   
-  // Load user preferences
+  // Load user preferences and initialize gamification systems
   useEffect(() => {
     const loadPreferences = async () => {
       try {
@@ -49,8 +62,18 @@ export default function LessonScreen() {
           setMascotType(preferredMascot as 'coco' | 'lora');
         }
         
+        // Initialize gamification systems
+        const combo = await comboManager.loadComboState();
+        setComboState(combo);
+        
+        const boostMultiplier = xpBoostManager.getCurrentMultiplier();
+        setXpMultiplier(boostMultiplier);
+        
+        await mascotPersonalityManager.loadMascotState();
+        
         // Show mascot message at the beginning
         setShowMascot(true);
+        setShowComboDisplay(true);
         
         // Hide mascot after 5 seconds
         setTimeout(() => {
@@ -64,7 +87,7 @@ export default function LessonScreen() {
     loadPreferences();
   }, []);
   
-  const handleAnswer = (isCorrect: boolean) => {
+  const handleAnswer = async (isCorrect: boolean) => {
     if (Platform.OS !== 'web') {
       Haptics.notificationAsync(
         isCorrect 
@@ -73,16 +96,66 @@ export default function LessonScreen() {
       );
     }
     
+    let earnedXP = 0;
+    
     if (isCorrect) {
-      setScore(prev => prev + 10);
+      // Handle combo system
+      const comboResult = await comboManager.recordCorrectAnswer();
+      setComboState(comboResult.comboState);
+      
+      // Show combo celebration if tier changed
+      if (comboResult.tierUp) {
+        setComboCelebrationData({
+          previousTier: comboResult.previousTier,
+          currentTier: comboResult.currentTier,
+          combo: comboResult.comboState.currentCombo,
+        });
+        setShowComboCelebration(true);
+        
+        setTimeout(() => {
+          setShowComboCelebration(false);
+        }, 3000);
+      }
+      
+      // Calculate XP with combo and boost multipliers
+      const boostedXP = await xpBoostManager.calculateBoostedXP(comboResult.bonusXP);
+      earnedXP = boostedXP;
+      setScore(prev => prev + earnedXP);
+      
+      // Record positive interaction with mascot
+      await mascotPersonalityManager.recordInteraction(mascotType, true);
+    } else {
+      // Reset combo on incorrect answer
+      const newComboState = await comboManager.recordIncorrectAnswer();
+      setComboState(newComboState);
+      
+      // Record interaction but not positive
+      await mascotPersonalityManager.recordInteraction(mascotType, false);
     }
     
     // Move to next exercise or complete lesson
     if (currentExerciseIndex < exercises.length - 1) {
       setCurrentExerciseIndex(prev => prev + 1);
       
-      // Randomly show mascot (20% chance)
-      if (Math.random() < 0.2) {
+      // Use lesson-based boosts
+      await xpBoostManager.useBoostForLesson();
+      setXpMultiplier(xpBoostManager.getCurrentMultiplier());
+      
+      // Smart mascot showing based on relationship and context
+      const shouldShow = mascotPersonalityManager.shouldShowMascot(
+        isCorrect ? 'correct_answer' : 'wrong_answer'
+      );
+      
+      if (shouldShow) {
+        const personalizedMessage = mascotPersonalityManager.getPersonalizedMessage(
+          isCorrect ? 'correct_answer' : 'wrong_answer',
+          {
+            recentPerformance: isCorrect ? 'good' : 'struggling',
+            timeOfDay: new Date().getHours() < 12 ? 'morning' : 
+                      new Date().getHours() < 18 ? 'afternoon' : 'evening'
+          }
+        );
+        
         setShowMascot(true);
         
         // Hide mascot after 3 seconds
@@ -95,7 +168,8 @@ export default function LessonScreen() {
       setShowConfetti(true);
       
       // Award badges and XP
-      const newBadges = completeLesson(id as string, score + (isCorrect ? 10 : 0), exercises.length);
+      const finalScore = score + earnedXP;
+      const newBadges = completeLesson(id as string, finalScore, exercises.length);
       setEarnedBadges(newBadges);
       
       // Show mascot with congratulations
@@ -138,6 +212,14 @@ export default function LessonScreen() {
           />
         </View>
         
+        {/* Combo display */}
+        {showComboDisplay && comboState && (
+          <ComboDisplay 
+            comboState={comboState}
+            visible={showComboDisplay}
+          />
+        )}
+        
         {!completed ? (
           // Exercise view
           <View style={styles.exerciseContainer}>
@@ -160,6 +242,12 @@ export default function LessonScreen() {
               </View>
               <Text style={styles.completionTitle}>Lesson Completed!</Text>
               <Text style={styles.completionScore}>You earned {score} XP</Text>
+              {comboState && comboState.currentCombo > 0 && (
+                <Text style={styles.comboBonus}>
+                  🔥 {comboState.currentCombo}x Combo! 
+                  {xpMultiplier > 1 && ` (${xpMultiplier.toFixed(1)}x Boost)`}
+                </Text>
+              )}
               
               <View style={styles.statsContainer}>
                 <View style={styles.statItem}>
@@ -236,6 +324,17 @@ export default function LessonScreen() {
           />
         )}
         
+        {/* Combo celebration */}
+        {showComboCelebration && comboCelebrationData && (
+          <ComboCelebration 
+            visible={showComboCelebration}
+            tier={comboCelebrationData.currentTier}
+            combo={comboCelebrationData.combo}
+            bonusXP={score * 0.2} // Estimate bonus XP
+            onComplete={() => setShowComboCelebration(false)}
+          />
+        )}
+        
         {/* Confetti effect */}
         <ConfettiEffect 
           visible={showConfetti} 
@@ -299,7 +398,14 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: Colors.primary,
     fontWeight: '600',
+    marginBottom: 12,
+  },
+  comboBonus: {
+    fontSize: 16,
+    color: Colors.secondary,
+    fontWeight: '600',
     marginBottom: 24,
+    textAlign: 'center',
   },
   statsContainer: {
     flexDirection: 'row',

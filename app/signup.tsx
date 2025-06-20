@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, Image, ScrollView, ActivityIndicator, Alert } from 'react-native';
 import { useRouter } from 'expo-router';
 import { MaterialIcons } from '@expo/vector-icons';
-import Colors from '@/constants/colors';
-import { useAuthStore } from '@/store/authStore';
+import Colors from '../constants/colors';
+import { useAuthStore } from '../store/authStore';
 
 export default function SignupScreen() {
   const router = useRouter();

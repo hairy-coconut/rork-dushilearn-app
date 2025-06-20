@@ -1,9 +1,9 @@
 import React, { useState, useRef } from 'react';
 import { StyleSheet, Text, View, TouchableOpacity, Animated } from 'react-native';
-import Colors from '@/constants/colors';
-import { Exercise } from '@/constants/exercises';
+import Colors from './constants/colors';
+import { Exercise } from './constants/exercises';
 import AudioButton from './AudioButton';
-import { wordAudios } from '@/constants/audio';
+import { wordAudios } from './constants/audio';
 import MascotMessage from './MascotMessage';
 import * as Haptics from 'expo-haptics';
 

@@ -16,7 +16,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { BlurView } from 'expo-blur';
 import { Audio } from 'expo-av';
 import { useRouter, useLocalSearchParams } from 'expo-router';
-import { useTheme } from '../contexts/ThemeContext';
+import Colors from './constants/colors';
 import { useUser } from '../contexts/AuthContext';
 import { LessonContent, getLessonById } from '../utils/lessonTypes';
 import * as Haptics from 'expo-haptics';
@@ -105,8 +105,8 @@ const LessonScreen = () => {
 
     if (loading || !lesson) {
         return (
-            <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
-                <ActivityIndicator size="large" color={theme.colors.primary} />
+            <View style={[styles.container, { backgroundColor: Colors.background }]}>
+                <ActivityIndicator size="large" color={Colors.primary} />
             </View>
         );
     }
@@ -123,7 +123,7 @@ const LessonScreen = () => {
                             <MaterialCommunityIcons
                                 name="play-circle"
                                 size={64}
-                                color={theme.colors.primary}
+                                color={Colors.primary}
                             />
                             <Text style={styles.audioButtonText}>
                                 Listen to the phrase
@@ -229,9 +229,9 @@ const LessonScreen = () => {
     };
 
     return (
-        <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
+        <View style={[styles.container, { backgroundColor: Colors.background }]}>
             <LinearGradient
-                colors={[theme.colors.primary, theme.colors.secondary]}
+                colors={[Colors.primary, Colors.secondary]}
                 style={styles.header}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 1 }}
@@ -264,7 +264,7 @@ const LessonScreen = () => {
                     <TouchableOpacity
                         style={[
                             styles.continueButton,
-                            { backgroundColor: isCorrect ? '#4CAF50' : theme.colors.primary },
+                            { backgroundColor: isCorrect ? '#4CAF50' : Colors.primary },
                         ]}
                         onPress={handleContinue}
                     >

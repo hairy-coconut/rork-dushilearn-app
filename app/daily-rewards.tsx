@@ -14,7 +14,11 @@ import { useTheme } from '@react-navigation/native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { BlurView } from 'expo-blur';
 import * as Haptics from 'expo-haptics';
-import Carousel from 'react-native-snap-carousel';
+// Conditional import for carousel
+let Carousel: any = null;
+if (Platform.OS !== 'web') {
+    Carousel = require('react-native-snap-carousel').default;
+}
 import { WebCarousel } from '../components/WebCarousel';
 import { useAuth } from '../contexts/AuthContext';
 import { DailyRewardCard } from '../components/DailyRewardCard';
@@ -109,7 +113,7 @@ export default function DailyRewardsScreen() {
     if (loading) {
         return (
             <View style={styles.loadingContainer}>
-                <ActivityIndicator size="large" color={theme.colors.primary} />
+                <ActivityIndicator size="large" color={Colors.primary} />
             </View>
         );
     }

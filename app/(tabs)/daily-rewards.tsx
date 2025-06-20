@@ -28,7 +28,7 @@ import {
     DailyReward,
     RewardProgress,
 } from '../../utils/dailyRewards';
-import WebCarousel from '../../components/WebCarousel';
+import { WebCarousel } from '../../components/WebCarousel';
 
 const { width: screenWidth } = Dimensions.get('window');
 
@@ -125,7 +125,7 @@ export default function DailyRewardsScreen() {
     if (loading) {
         return (
             <View style={styles.loadingContainer}>
-                <ActivityIndicator size="large" color={theme.colors.primary} />
+                <ActivityIndicator size="large" color="#00CED1" />
             </View>
         );
     }

@@ -13,7 +13,7 @@ import {
     Dimensions,
 } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { useTheme } from '../contexts/ThemeContext';
+import Colors from './constants/colors';
 import { LinearGradient } from 'expo-linear-gradient';
 import { BlurView } from 'expo-blur';
 import * as Haptics from 'expo-haptics';
@@ -200,7 +200,7 @@ const FriendsScreen = () => {
                         <MaterialCommunityIcons
                             name="star"
                             size={16}
-                            color={theme.colors.primary}
+                            color={Colors.primary}
                         />
                         <Text style={styles.statText}>{friend.xp}</Text>
                     </View>
@@ -208,7 +208,7 @@ const FriendsScreen = () => {
                         <MaterialCommunityIcons
                             name="fire"
                             size={16}
-                            color={theme.colors.secondary}
+                            color={Colors.secondary}
                         />
                         <Text style={styles.statText}>{friend.streak}</Text>
                     </View>
@@ -220,7 +220,7 @@ const FriendsScreen = () => {
                     <MaterialCommunityIcons
                         name="account-remove"
                         size={24}
-                        color={theme.colors.error}
+                        color={Colors.error}
                     />
                 </TouchableOpacity>
             </LinearGradient>
@@ -275,13 +275,13 @@ const FriendsScreen = () => {
     if (loading) {
         return (
             <View style={[styles.container, styles.centered]}>
-                <ActivityIndicator size="large" color={theme.colors.primary} />
+                <ActivityIndicator size="large" color={Colors.primary} />
             </View>
         );
     }
 
     return (
-        <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
+        <View style={[styles.container, { backgroundColor: Colors.background }]}>
             <Animated.View
                 style={[
                     styles.header,
@@ -298,7 +298,7 @@ const FriendsScreen = () => {
                 ]}
             >
                 <LinearGradient
-                    colors={[theme.colors.primary, theme.colors.secondary]}
+                    colors={[Colors.primary, Colors.secondary]}
                     style={styles.headerGradient}
                     start={{ x: 0, y: 0 }}
                     end={{ x: 1, y: 1 }}
@@ -315,7 +315,7 @@ const FriendsScreen = () => {
                                 <MaterialCommunityIcons
                                     name="account-group"
                                     size={20}
-                                    color={activeTab === 'friends' ? '#fff' : theme.colors.primary}
+                                    color={activeTab === 'friends' ? '#fff' : Colors.primary}
                                 />
                                 <Text style={[
                                     styles.tabText,
@@ -334,7 +334,7 @@ const FriendsScreen = () => {
                                 <MaterialCommunityIcons
                                     name="bell"
                                     size={20}
-                                    color={activeTab === 'requests' ? '#fff' : theme.colors.primary}
+                                    color={activeTab === 'requests' ? '#fff' : Colors.primary}
                                 />
                                 <Text style={[
                                     styles.tabText,
@@ -361,7 +361,7 @@ const FriendsScreen = () => {
                     <MaterialCommunityIcons
                         name={showSearch ? 'close' : 'account-plus'}
                         size={24}
-                        color={theme.colors.primary}
+                        color={Colors.primary}
                     />
                 </TouchableOpacity>
                 {showSearch && (
@@ -369,7 +369,7 @@ const FriendsScreen = () => {
                         <MaterialCommunityIcons
                             name="magnify"
                             size={20}
-                            color={theme.colors.textSecondary}
+                            color={Colors.textLight}
                             style={styles.searchIcon}
                         />
                         <TextInput
@@ -377,7 +377,7 @@ const FriendsScreen = () => {
                             placeholder="Search users..."
                             value={searchQuery}
                             onChangeText={handleSearch}
-                            placeholderTextColor={theme.colors.textSecondary}
+                            placeholderTextColor={Colors.textLight}
                         />
                     </View>
                 )}
@@ -391,7 +391,7 @@ const FriendsScreen = () => {
                     <RefreshControl
                         refreshing={refreshing}
                         onRefresh={handleRefresh}
-                        tintColor={theme.colors.primary}
+                        tintColor={Colors.primary}
                     />
                 }
             >
@@ -465,7 +465,7 @@ const styles = StyleSheet.create({
     },
     badge: {
         backgroundColor: '#fff',
-        color: theme.colors.primary,
+        color: Colors.primary,
         fontSize: 12,
         fontWeight: 'bold',
         paddingHorizontal: 6,
@@ -608,10 +608,10 @@ const styles = StyleSheet.create({
         marginLeft: 8,
     },
     acceptButton: {
-        backgroundColor: theme.colors.success,
+        backgroundColor: Colors.success,
     },
     rejectButton: {
-        backgroundColor: theme.colors.error,
+        backgroundColor: Colors.error,
     },
     searchResults: {
         paddingHorizontal: 20,

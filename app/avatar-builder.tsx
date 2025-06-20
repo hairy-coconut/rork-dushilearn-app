@@ -12,7 +12,7 @@ import {
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { BlurView } from 'expo-blur';
-import { useTheme } from '../contexts/ThemeContext';
+import Colors from '../constants/colors';
 import { useUser } from '../contexts/AuthContext';
 import * as Haptics from 'expo-haptics';
 
@@ -167,7 +167,7 @@ const AvatarBuilderScreen = () => {
                         name={accessory.icon}
                         size={24}
                         color={customization.accessories.includes(accessory.id)
-                            ? theme.colors.primary
+                            ? Colors.primary
                             : '#666'
                         }
                     />
@@ -177,9 +177,9 @@ const AvatarBuilderScreen = () => {
     );
 
     return (
-        <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
+        <View style={[styles.container, { backgroundColor: Colors.background }]}>
             <LinearGradient
-                colors={[theme.colors.primary, theme.colors.secondary]}
+                colors={[Colors.primary, Colors.secondary]}
                 style={styles.header}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 1 }}
@@ -241,7 +241,7 @@ const AvatarBuilderScreen = () => {
                                     'necklace'
                                 }
                                 size={24}
-                                color={selectedPart === part ? '#fff' : theme.colors.primary}
+                                color={selectedPart === part ? '#fff' : Colors.primary}
                             />
                             <Text style={[
                                 styles.partText,
@@ -261,7 +261,7 @@ const AvatarBuilderScreen = () => {
                 onPress={handleSave}
             >
                 <LinearGradient
-                    colors={[theme.colors.primary, theme.colors.secondary]}
+                    colors={[Colors.primary, Colors.secondary]}
                     style={styles.saveButtonGradient}
                     start={{ x: 0, y: 0 }}
                     end={{ x: 1, y: 1 }}
@@ -363,13 +363,13 @@ const styles = StyleSheet.create({
         backgroundColor: '#f0f0f0',
     },
     selectedPartButton: {
-        backgroundColor: theme.colors.primary,
+        backgroundColor: Colors.primary,
     },
     partText: {
         marginLeft: 8,
         fontSize: 14,
         fontWeight: '600',
-        color: theme.colors.primary,
+        color: Colors.primary,
     },
     selectedPartText: {
         color: '#fff',
@@ -390,7 +390,7 @@ const styles = StyleSheet.create({
         borderColor: 'transparent',
     },
     selectedColor: {
-        borderColor: theme.colors.primary,
+        borderColor: Colors.primary,
     },
     accessoriesPicker: {
         maxHeight: 60,

@@ -10,7 +10,7 @@ import {
     Animated,
 } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { useTheme } from '../contexts/ThemeContext';
+import Colors from './constants/colors';
 import { LinearGradient } from 'expo-linear-gradient';
 import { BlurView } from 'expo-blur';
 import * as Haptics from 'expo-haptics';
@@ -134,7 +134,7 @@ export default function DailyChallengesScreen() {
     if (loading) {
         return (
             <View style={[styles.container, styles.centered]}>
-                <ActivityIndicator size="large" color={theme.colors.primary} />
+                <ActivityIndicator size="large" color={Colors.primary} />
             </View>
         );
     }
@@ -206,7 +206,7 @@ export default function DailyChallengesScreen() {
                     <RefreshControl
                         refreshing={refreshing}
                         onRefresh={handleRefresh}
-                        tintColor={theme.colors.primary}
+                        tintColor={Colors.primary}
                     />
                 }
             >
@@ -225,7 +225,7 @@ export default function DailyChallengesScreen() {
                         <MaterialCommunityIcons
                             name="lightbulb"
                             size={20}
-                            color={theme.colors.primary}
+                            color={Colors.primary}
                         />
                         <Text style={styles.tipText}>
                             Complete challenges early to maximize your streak bonus
@@ -235,7 +235,7 @@ export default function DailyChallengesScreen() {
                         <MaterialCommunityIcons
                             name="clock-fast"
                             size={20}
-                            color={theme.colors.primary}
+                            color={Colors.primary}
                         />
                         <Text style={styles.tipText}>
                             Challenges refresh every 24 hours
@@ -245,7 +245,7 @@ export default function DailyChallengesScreen() {
                         <MaterialCommunityIcons
                             name="star"
                             size={20}
-                            color={theme.colors.primary}
+                            color={Colors.primary}
                         />
                         <Text style={styles.tipText}>
                             Longer streaks give you higher XP multipliers

@@ -9,7 +9,7 @@ import {
     Dimensions,
 } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { useTheme } from '../contexts/ThemeContext';
+import Colors from "../constants/colors";
 import { LinearGradient } from 'expo-linear-gradient';
 import { BlurView } from 'expo-blur';
 import * as Haptics from 'expo-haptics';
@@ -80,16 +80,16 @@ export default function AchievementDetailsScreen() {
 
     if (loading) {
         return (
-            <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
-                <ActivityIndicator size="large" color={theme.colors.primary} />
+            <View style={[styles.container, { backgroundColor: Colors.background }]}>
+                <ActivityIndicator size="large" color={Colors.primary} />
             </View>
         );
     }
 
     if (!achievement) {
         return (
-            <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
-                <Text style={[styles.errorText, { color: theme.colors.text }]}>
+            <View style={[styles.container, { backgroundColor: Colors.background }]}>
+                <Text style={[styles.errorText, { color: Colors.text }]}>
                     Failed to load achievement details
                 </Text>
             </View>
@@ -97,7 +97,7 @@ export default function AchievementDetailsScreen() {
     }
 
     return (
-        <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
+        <View style={[styles.container, { backgroundColor: Colors.background }]}>
             <ScrollView style={styles.scrollView}>
                 <View style={styles.header}>
                     <TouchableOpacity
@@ -107,10 +107,10 @@ export default function AchievementDetailsScreen() {
                         <MaterialCommunityIcons
                             name="arrow-left"
                             size={24}
-                            color={theme.colors.text}
+                            color={Colors.text}
                         />
                     </TouchableOpacity>
-                    <Text style={[styles.title, { color: theme.colors.text }]}>
+                    <Text style={[styles.title, { color: Colors.text }]}>
                         Achievement Details
                     </Text>
                 </View>
@@ -127,7 +127,7 @@ export default function AchievementDetailsScreen() {
                                 <MaterialCommunityIcons
                                     name={achievement.icon}
                                     size={64}
-                                    color={achievement.isCompleted ? '#4CAF50' : theme.colors.primary}
+                                    color={achievement.isCompleted ? '#4CAF50' : Colors.primary}
                                 />
                                 <Text style={styles.achievementTitle}>{achievement.title}</Text>
                                 <Text style={styles.achievementDescription}>
@@ -139,7 +139,7 @@ export default function AchievementDetailsScreen() {
                 </View>
 
                 <View style={styles.section}>
-                    <Text style={[styles.sectionTitle, { color: theme.colors.text }]}>
+                    <Text style={[styles.sectionTitle, { color: Colors.text }]}>
                         Progress
                     </Text>
                     <View style={styles.progressCard}>
@@ -160,7 +160,7 @@ export default function AchievementDetailsScreen() {
                 </View>
 
                 <View style={styles.section}>
-                    <Text style={[styles.sectionTitle, { color: theme.colors.text }]}>
+                    <Text style={[styles.sectionTitle, { color: Colors.text }]}>
                         Requirements
                     </Text>
                     {achievement.requirements.map((req, index) => (
@@ -169,7 +169,7 @@ export default function AchievementDetailsScreen() {
                                 <MaterialCommunityIcons
                                     name={getRequirementIcon(req.type)}
                                     size={24}
-                                    color={theme.colors.primary}
+                                    color={Colors.primary}
                                 />
                                 <Text style={styles.requirementTitle}>
                                     {req.description}
@@ -195,7 +195,7 @@ export default function AchievementDetailsScreen() {
                 </View>
 
                 <View style={styles.section}>
-                    <Text style={[styles.sectionTitle, { color: theme.colors.text }]}>
+                    <Text style={[styles.sectionTitle, { color: Colors.text }]}>
                         Reward
                     </Text>
                     <View style={styles.rewardCard}>
@@ -217,7 +217,7 @@ export default function AchievementDetailsScreen() {
 
                 {achievement.unlockedAt && (
                     <View style={styles.section}>
-                        <Text style={[styles.sectionTitle, { color: theme.colors.text }]}>
+                        <Text style={[styles.sectionTitle, { color: Colors.text }]}>
                             Unlocked
                         </Text>
                         <Text style={styles.unlockedText}>

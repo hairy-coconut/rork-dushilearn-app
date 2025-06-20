@@ -1,8 +1,8 @@
 import React from 'react';
 import { StyleSheet, ScrollView } from 'react-native';
-import { categories } from '@/constants/lessons';
-import CategorySection from '@/components/CategorySection';
-import Colors from '@/constants/colors';
+import { categories } from '../../constants/lessons';
+import CategorySection from '../../components/CategorySection';
+import Colors from '../../constants/colors';
 
 export default function LessonsScreen() {
   return (

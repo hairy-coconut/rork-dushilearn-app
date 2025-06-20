@@ -55,7 +55,7 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
     const fetchUser = async (userId: string) => {
         try {
             const { data, error } = await supabase
-                .from('users')
+                .from('profiles')
                 .select('*')
                 .eq('id', userId)
                 .single();
@@ -97,7 +97,7 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
 
         try {
             const { error } = await supabase
-                .from('users')
+                .from('profiles')
                 .update(updates)
                 .eq('id', user.id);
 

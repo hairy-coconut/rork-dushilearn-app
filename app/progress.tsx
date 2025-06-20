@@ -1,8 +1,8 @@
 import React from 'react';
 import { View, Text, StyleSheet, ScrollView, ActivityIndicator } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { useProgress } from '@/contexts/ProgressContext';
-import Colors from '@/constants/colors';
+import { useProgress } from '../contexts/ProgressContext';
+import Colors from '../constants/colors';
 
 export default function ProgressScreen() {
   const { progress, isLoading, error } = useProgress();

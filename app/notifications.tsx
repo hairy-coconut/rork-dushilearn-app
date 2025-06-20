@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import { Stack } from 'expo-router';
-import NotificationCenter from '@/components/NotificationCenter';
+import NotificationCenter from './components/NotificationCenter';
 
 export default function NotificationsScreen() {
   return (

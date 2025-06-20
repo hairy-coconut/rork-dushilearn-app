@@ -1,7 +1,7 @@
 import 'react-native-url-polyfill/auto';
 // Remove direct import of AsyncStorage for web compatibility
 import { createClient } from '@supabase/supabase-js';
-import { SUPABASE_URL, SUPABASE_ANON_KEY } from '@/constants/config';
+import { SUPABASE_URL, SUPABASE_ANON_KEY } from '../constants/config';
 
 export function getSupabaseClient() {
   let storage;
@@ -22,7 +22,17 @@ export function getSupabaseClient() {
   });
 }
 
-export const supabase = getSupabaseClient();
+// Lazy-loaded supabase client to avoid SSR issues
+let _supabase: ReturnType<typeof createClient> | null = null;
+
+export const supabase = new Proxy({} as ReturnType<typeof createClient>, {
+  get(target, prop) {
+    if (!_supabase) {
+      _supabase = getSupabaseClient();
+    }
+    return _supabase[prop as keyof typeof _supabase];
+  }
+});
 
 // User progress table operations
 export const userProgressApi = {

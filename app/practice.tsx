@@ -10,7 +10,7 @@ import {
     Animated,
 } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { useTheme } from '../contexts/ThemeContext';
+import Colors from "../constants/colors";
 import { LinearGradient } from 'expo-linear-gradient';
 import { BlurView } from 'expo-blur';
 import * as Haptics from 'expo-haptics';
@@ -110,7 +110,7 @@ export default function PracticeScreen() {
     if (loading) {
         return (
             <View style={[styles.container, styles.centered]}>
-                <ActivityIndicator size="large" color={theme.colors.primary} />
+                <ActivityIndicator size="large" color={Colors.primary} />
             </View>
         );
     }
@@ -182,7 +182,7 @@ export default function PracticeScreen() {
                     <RefreshControl
                         refreshing={refreshing}
                         onRefresh={handleRefresh}
-                        tintColor={theme.colors.primary}
+                        tintColor={Colors.primary}
                     />
                 }
             >
@@ -201,7 +201,7 @@ export default function PracticeScreen() {
                         <MaterialCommunityIcons
                             name="clock-fast"
                             size={20}
-                            color={theme.colors.primary}
+                            color={Colors.primary}
                         />
                         <Text style={styles.tipText}>
                             Review items when they're due for optimal retention
@@ -211,7 +211,7 @@ export default function PracticeScreen() {
                         <MaterialCommunityIcons
                             name="chart-bell-curve"
                             size={20}
-                            color={theme.colors.primary}
+                            color={Colors.primary}
                         />
                         <Text style={styles.tipText}>
                             Difficulty adjusts based on your performance
@@ -221,7 +221,7 @@ export default function PracticeScreen() {
                         <MaterialCommunityIcons
                             name="star"
                             size={20}
-                            color={theme.colors.primary}
+                            color={Colors.primary}
                         />
                         <Text style={styles.tipText}>
                             Master items to unlock new content

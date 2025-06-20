@@ -9,7 +9,7 @@ import {
     Dimensions,
 } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { useTheme } from '../contexts/ThemeContext';
+import Colors from './constants/colors';
 import { LinearGradient } from 'expo-linear-gradient';
 import { BlurView } from 'expo-blur';
 import * as Haptics from 'expo-haptics';
@@ -98,16 +98,16 @@ export default function StreakDetailsScreen() {
 
     if (loading) {
         return (
-            <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
-                <ActivityIndicator size="large" color={theme.colors.primary} />
+            <View style={[styles.container, { backgroundColor: Colors.background }]}>
+                <ActivityIndicator size="large" color={Colors.primary} />
             </View>
         );
     }
 
     if (!stats) {
         return (
-            <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
-                <Text style={[styles.errorText, { color: theme.colors.text }]}>
+            <View style={[styles.container, { backgroundColor: Colors.background }]}>
+                <Text style={[styles.errorText, { color: Colors.text }]}>
                     Failed to load streak statistics
                 </Text>
             </View>
@@ -115,7 +115,7 @@ export default function StreakDetailsScreen() {
     }
 
     return (
-        <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
+        <View style={[styles.container, { backgroundColor: Colors.background }]}>
             <ScrollView style={styles.scrollView}>
                 <View style={styles.header}>
                     <TouchableOpacity
@@ -125,10 +125,10 @@ export default function StreakDetailsScreen() {
                         <MaterialCommunityIcons
                             name="arrow-left"
                             size={24}
-                            color={theme.colors.text}
+                            color={Colors.text}
                         />
                     </TouchableOpacity>
-                    <Text style={[styles.title, { color: theme.colors.text }]}>
+                    <Text style={[styles.title, { color: Colors.text }]}>
                         Streak Details
                     </Text>
                 </View>
@@ -160,7 +160,7 @@ export default function StreakDetailsScreen() {
                 </View>
 
                 <View style={styles.section}>
-                    <Text style={[styles.sectionTitle, { color: theme.colors.text }]}>
+                    <Text style={[styles.sectionTitle, { color: Colors.text }]}>
                         Current Bonus
                     </Text>
                     <View style={styles.bonusCard}>
@@ -181,7 +181,7 @@ export default function StreakDetailsScreen() {
                 </View>
 
                 <View style={styles.section}>
-                    <Text style={[styles.sectionTitle, { color: theme.colors.text }]}>
+                    <Text style={[styles.sectionTitle, { color: Colors.text }]}>
                         Next Milestone
                     </Text>
                     <View style={styles.milestoneCard}>
@@ -212,7 +212,7 @@ export default function StreakDetailsScreen() {
                 </View>
 
                 <View style={styles.section}>
-                    <Text style={[styles.sectionTitle, { color: theme.colors.text }]}>
+                    <Text style={[styles.sectionTitle, { color: Colors.text }]}>
                         Streak History
                     </Text>
                     <View style={styles.historyContainer}>

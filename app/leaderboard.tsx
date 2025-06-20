@@ -12,7 +12,7 @@ import {
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { BlurView } from 'expo-blur';
-import { useTheme } from '../contexts/ThemeContext';
+import Colors from '../constants/colors';
 import { useUser } from '../contexts/AuthContext';
 import {
     getGlobalLeaderboard,
@@ -121,7 +121,7 @@ const LeaderboardScreen = () => {
                 ]}
             >
                 <LinearGradient
-                    colors={isCurrentUser ? [theme.colors.primary, theme.colors.secondary] : ['#fff', '#f5f5f5']}
+                    colors={isCurrentUser ? [Colors.primary, Colors.secondary] : ['#fff', '#f5f5f5']}
                     style={styles.leaderboardItemGradient}
                     start={{ x: 0, y: 0 }}
                     end={{ x: 1, y: 1 }}
@@ -172,9 +172,9 @@ const LeaderboardScreen = () => {
     };
 
     return (
-        <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
+        <View style={[styles.container, { backgroundColor: Colors.background }]}>
             <LinearGradient
-                colors={[theme.colors.primary, theme.colors.secondary]}
+                colors={[Colors.primary, Colors.secondary]}
                 style={styles.header}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 1 }}
@@ -191,7 +191,7 @@ const LeaderboardScreen = () => {
                         <MaterialCommunityIcons
                             name="earth"
                             size={20}
-                            color={leaderboardType === 'global' ? '#fff' : theme.colors.primary}
+                            color={leaderboardType === 'global' ? '#fff' : Colors.primary}
                         />
                         <Text style={[
                             styles.leaderboardTypeText,
@@ -210,7 +210,7 @@ const LeaderboardScreen = () => {
                         <MaterialCommunityIcons
                             name="account-group"
                             size={20}
-                            color={leaderboardType === 'friends' ? '#fff' : theme.colors.primary}
+                            color={leaderboardType === 'friends' ? '#fff' : Colors.primary}
                         />
                         <Text style={[
                             styles.leaderboardTypeText,
@@ -264,7 +264,7 @@ const LeaderboardScreen = () => {
                     <View style={styles.userRankContainer}>
                         <Text style={styles.userRankTitle}>Your Rank</Text>
                         <LinearGradient
-                            colors={[theme.colors.primary, theme.colors.secondary]}
+                            colors={[Colors.primary, Colors.secondary]}
                             style={styles.userRankCard}
                             start={{ x: 0, y: 0 }}
                             end={{ x: 1, y: 1 }}
@@ -343,12 +343,12 @@ const styles = StyleSheet.create({
         marginRight: 12,
     },
     selectedTimeFrame: {
-        backgroundColor: theme.colors.primary,
+        backgroundColor: Colors.primary,
     },
     timeFrameText: {
         fontSize: 14,
         fontWeight: '600',
-        color: theme.colors.primary,
+        color: Colors.primary,
     },
     selectedTimeFrameText: {
         color: '#fff',
@@ -394,7 +394,7 @@ const styles = StyleSheet.create({
     rankNumber: {
         fontSize: 12,
         fontWeight: 'bold',
-        color: theme.colors.primary,
+        color: Colors.primary,
     },
     topThreeAvatar: {
         width: 60,

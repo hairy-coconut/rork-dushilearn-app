@@ -1,6 +1,6 @@
-import { supabase } from '@/utils/supabase';
-import { getCurrentUser } from '@/utils/auth';
-import { sendNotification } from '@/utils/notifications';
+import { supabase } from './utils/supabase';
+import { getCurrentUser } from './utils/auth';
+import { sendNotification } from './utils/notifications';
 
 export interface Achievement {
   id: string;

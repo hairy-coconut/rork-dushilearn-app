@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { SubscriptionStatus, SubscriptionTier } from '@/types/subscription';
-import { getUserSubscriptionStatus, hasFeatureAccess } from '@/utils/subscription';
-import { getCurrentUser } from '@/utils/supabase';
+import { SubscriptionStatus, SubscriptionTier } from '../types/subscription';
+import { getUserSubscriptionStatus, hasFeatureAccess } from '../utils/subscription';
+import { supabase } from '../utils/supabase';
 
 interface SubscriptionContextType {
   subscriptionStatus: SubscriptionStatus | null;
@@ -22,7 +22,8 @@ export function SubscriptionProvider({ children }: { children: React.ReactNode }
     try {
       setIsLoading(true);
       setError(null);
-      const user = await getCurrentUser();
+      
+      const { data: { user } } = await supabase.auth.getUser();
       
       if (!user) {
         setSubscriptionStatus(null);
@@ -41,7 +42,7 @@ export function SubscriptionProvider({ children }: { children: React.ReactNode }
 
   const hasAccess = async (featureKey: string): Promise<boolean> => {
     try {
-      const user = await getCurrentUser();
+      const { data: { user } } = await supabase.auth.getUser();
       if (!user) return false;
       
       return await hasFeatureAccess(featureKey);

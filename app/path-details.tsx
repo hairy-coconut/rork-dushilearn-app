@@ -14,7 +14,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { BlurView } from 'expo-blur';
 import { useRoute, useNavigation } from '@react-navigation/native';
 import { useUser } from '../contexts/AuthContext';
-import { useTheme } from '../contexts/ThemeContext';
+import Colors from './constants/colors';
 import {
     getAvailablePaths,
     getUserProgress,
@@ -62,8 +62,8 @@ const LessonCard = ({ lesson, onPress, isCompleted, isLocked }) => {
             >
                 <LinearGradient
                     colors={[
-                        theme.colors.primary,
-                        theme.colors.secondary,
+                        Colors.primary,
+                        Colors.secondary,
                     ]}
                     style={styles.lessonCardGradient}
                     start={{ x: 0, y: 0 }}
@@ -178,14 +178,14 @@ const PathDetailsScreen = () => {
 
     if (loading || !path) {
         return (
-            <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
-                <ActivityIndicator size="large" color={theme.colors.primary} />
+            <View style={[styles.container, { backgroundColor: Colors.background }]}>
+                <ActivityIndicator size="large" color={Colors.primary} />
             </View>
         );
     }
 
     return (
-        <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
+        <View style={[styles.container, { backgroundColor: Colors.background }]}>
             <Animated.View
                 style={[
                     styles.header,
@@ -195,7 +195,7 @@ const PathDetailsScreen = () => {
                 ]}
             >
                 <LinearGradient
-                    colors={[theme.colors.primary, theme.colors.secondary]}
+                    colors={[Colors.primary, Colors.secondary]}
                     style={styles.headerGradient}
                     start={{ x: 0, y: 0 }}
                     end={{ x: 1, y: 1 }}

@@ -7,7 +7,7 @@ import {
   Dimensions,
 } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import Colors from '@/constants/colors';
+import Colors from './constants/colors';
 
 const { width } = Dimensions.get('window');
 const DAYS_IN_WEEK = 7;

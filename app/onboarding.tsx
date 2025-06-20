@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import { StyleSheet, Text, View, TouchableOpacity, Image, ScrollView } from 'react-native';
 import { useRouter } from 'expo-router';
 import { MaterialIcons } from '@expo/vector-icons';
-import Colors from '@/constants/colors';
-import { mascots } from '@/constants/mascots';
+import Colors from './constants/colors';
+import { mascots } from './constants/mascots';
 
 type LearningReason = 'tourist' | 'expat' | 'local' | 'romance' | 'other';
 type PreferredMascot = 'coco' | 'lora';
@@ -19,10 +19,22 @@ export default function OnboardingScreen() {
   const handleComplete = async () => {
     // Save user preferences
     try {
-      await AsyncStorage.setItem('onboarding_completed', 'true');
-      await AsyncStorage.setItem('learning_reason', learningReason || 'other');
-      await AsyncStorage.setItem('preferred_mascot', preferredMascot || 'coco');
-      await AsyncStorage.setItem('daily_goal', String(dailyGoal || 5));
+      let storage;
+      if (typeof window !== 'undefined') {
+        // Web: use localStorage
+        storage = window.localStorage;
+        storage.setItem('onboarding_completed', 'true');
+        storage.setItem('learning_reason', learningReason || 'other');
+        storage.setItem('preferred_mascot', preferredMascot || 'coco');
+        storage.setItem('daily_goal', String(dailyGoal || 5));
+      } else {
+        // Native: use AsyncStorage
+        const AsyncStorage = require('@react-native-async-storage/async-storage').default;
+        await AsyncStorage.setItem('onboarding_completed', 'true');
+        await AsyncStorage.setItem('learning_reason', learningReason || 'other');
+        await AsyncStorage.setItem('preferred_mascot', preferredMascot || 'coco');
+        await AsyncStorage.setItem('daily_goal', String(dailyGoal || 5));
+      }
       
       // Navigate to the main app
       router.replace('/(tabs)');

@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { StyleSheet, View, Animated, Easing, Dimensions } from 'react-native';
-import Colors from '@/constants/colors';
+import Colors from './constants/colors';
 
 const { width, height } = Dimensions.get('window');
 const CONFETTI_COLORS = [Colors.primary, Colors.secondary, Colors.success, '#FFD700', '#FF6B6B'];

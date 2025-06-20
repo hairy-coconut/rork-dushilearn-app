@@ -17,13 +17,13 @@ const NUDGES = [
     cta: 'Learn Now',
   },
   {
-    title: 'Don't break your Dushi streak!',
+    title: 'Don\'t break your Dushi streak!',
     message: 'Keep your learning momentum going with daily lessons.',
     cta: 'Continue Learning',
   },
   {
     title: 'Coconut Coin Milestone',
-    message: 'You've earned bonus Coconut Coins! Use them to unlock premium content.',
+    message: 'You\'ve earned bonus Coconut Coins! Use them to unlock premium content.',
     cta: 'Claim Reward',
   },
   {

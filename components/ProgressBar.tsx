@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet, View, Text } from 'react-native';
-import Colors from '@/constants/colors';
+import Colors from '../constants/colors';
 
 type ProgressBarProps = {
   progress: number; // 0 to 1

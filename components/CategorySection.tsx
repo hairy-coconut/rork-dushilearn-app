@@ -1,8 +1,8 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import { Category } from '@/constants/lessons';
+import { Category } from './constants/lessons';
 import LessonCard from './LessonCard';
-import Colors from '@/constants/colors';
+import Colors from './constants/colors';
 
 type CategorySectionProps = {
   category: Category;

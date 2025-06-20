@@ -1,207 +1,175 @@
--- Enable necessary extensions
-create extension if not exists "uuid-ossp" schema "extensions";
+-- Subscription tables for DushiLearn
 
--- Create subscription tiers table
-create table if not exists public.subscription_tiers (
-    id uuid default gen_random_uuid() primary key,
+-- Create subscription plans table
+create table if not exists public.subscription_plans (
+    id text primary key,
     name text not null,
-    description text,
-    price decimal(10,2) not null,
-    is_recurring boolean default false not null,
-    duration_days int,
-    features jsonb not null,
-    created_at timestamp with time zone default now() not null,
-    updated_at timestamp with time zone default now() not null
+    tier text not null check (tier in ('free', 'premium', 'elite')),
+    price decimal(10,2) not null default 0,
+    currency text not null default 'USD',
+    interval text not null check (interval in ('monthly', 'yearly')),
+    features jsonb default '[]',
+    is_popular boolean default false,
+    is_active boolean default true,
+    created_at timestamp with time zone default timezone('utc'::text, now()) not null,
+    updated_at timestamp with time zone default timezone('utc'::text, now()) not null
 );
 
 -- Create user subscriptions table
 create table if not exists public.user_subscriptions (
-    id uuid default gen_random_uuid() primary key,
-    user_id uuid references auth.users(id) on delete cascade not null,
-    tier_id uuid references public.subscription_tiers(id) on delete restrict not null,
-    status text not null check (status in ('active', 'expired', 'cancelled')),
-    start_date timestamp with time zone default now() not null,
-    end_date timestamp with time zone,
-    payment_id text,
-    created_at timestamp with time zone default now() not null,
-    updated_at timestamp with time zone default now() not null
-);
-
--- Create user features table to track unlocked features
-create table if not exists public.user_features (
-    id uuid default gen_random_uuid() primary key,
-    user_id uuid references auth.users(id) on delete cascade not null,
-    feature_key text not null,
-    is_active boolean default true not null,
-    unlocked_at timestamp with time zone default now() not null,
+    id uuid default uuid_generate_v4() primary key,
+    user_id uuid references public.profiles(id) on delete cascade not null,
+    plan_id text references public.subscription_plans(id),
+    tier text not null check (tier in ('free', 'premium', 'elite')) default 'free',
+    tier_name text not null default 'Free',
+    is_active boolean default true,
     expires_at timestamp with time zone,
-    created_at timestamp with time zone default now() not null,
-    updated_at timestamp with time zone default now() not null,
-    unique(user_id, feature_key)
+    stripe_subscription_id text,
+    stripe_customer_id text,
+    created_at timestamp with time zone default timezone('utc'::text, now()) not null,
+    updated_at timestamp with time zone default timezone('utc'::text, now()) not null,
+    unique(user_id)
 );
 
--- Create gift subscriptions table
-create table if not exists public.gift_subscriptions (
-    id uuid default gen_random_uuid() primary key,
-    sender_id uuid references auth.users(id) on delete cascade not null,
-    recipient_email text not null,
-    tier_id uuid references public.subscription_tiers(id) on delete restrict not null,
-    status text not null check (status in ('pending', 'redeemed', 'expired')),
-    redemption_code text not null,
-    expires_at timestamp with time zone not null,
-    created_at timestamp with time zone default now() not null,
-    updated_at timestamp with time zone default now() not null
+-- Create payment history table
+create table if not exists public.payment_history (
+    id uuid default uuid_generate_v4() primary key,
+    user_id uuid references public.profiles(id) on delete cascade not null,
+    subscription_id uuid references public.user_subscriptions(id) on delete cascade,
+    amount decimal(10,2) not null,
+    currency text not null default 'USD',
+    status text not null check (status in ('pending', 'succeeded', 'failed', 'cancelled')),
+    stripe_payment_intent_id text,
+    created_at timestamp with time zone default timezone('utc'::text, now()) not null
 );
 
--- Insert subscription tiers
-insert into public.subscription_tiers (name, description, price, is_recurring, duration_days, features)
-values
-    ('Free', 'Basic access with limited lessons', 0.00, false, null, '{
-        "lessons": ["Island Greetings", "Beach & Sun Essentials", "Ordering at the Snack Truck", "Getting Around the Island", "Simple Questions & Responses"],
-        "features": ["Coconut Coins & Streaks", "Progress tracking", "Mobile-optimized UI", "Share progress", "Invite friends"]
-    }'::jsonb),
-    ('Premium', 'Full access to all core lessons', 9.99, false, null, '{
-        "lessons": ["Love & Flirtation", "Curacao Slang 101", "Numbers & Money", "Real-Life Conversations", "Culture & Situations"],
-        "features": ["Printable Phrasebook PDF", "All badges", "Coconut Club Badge", "Phrase of the Day", "Offline access", "Lifetime updates"]
-    }'::jsonb),
-    ('Elite', 'AI-powered language learning experience', 49.99, false, null, '{
-        "ai_features": ["Real-time AI Translator", "AI Personas", "AI Vision", "Cultural Advisor"],
-        "lifestyle_features": ["Digital Certificate", "Early access", "Coconut Club community", "Bonus lessons"],
-        "includes_premium": true
-    }'::jsonb),
-    ('Elite Monthly', 'Monthly AI-powered language learning', 7.99, true, 30, '{
-        "ai_features": ["Real-time AI Translator", "AI Personas", "AI Vision", "Cultural Advisor"],
-        "lifestyle_features": ["Digital Certificate", "Early access", "Coconut Club community", "Bonus lessons"],
-        "includes_premium": true
-    }'::jsonb)
-on conflict (name) do update
-set 
-    description = excluded.description,
-    price = excluded.price,
-    is_recurring = excluded.is_recurring,
-    duration_days = excluded.duration_days,
-    features = excluded.features,
-    updated_at = now();
-
--- Function to check if a user has access to a feature
-create or replace function public.has_feature_access(
-    p_user_id uuid,
-    p_feature_key text
-)
-returns boolean
-language plpgsql
-security definer
-as $$
-declare
-    v_has_access boolean;
-begin
-    -- Check if user has an active subscription with the feature
-    select exists (
-        select 1
-        from public.user_subscriptions us
-        join public.subscription_tiers st on st.id = us.tier_id
-        where us.user_id = p_user_id
-        and us.status = 'active'
-        and (
-            us.end_date is null 
-            or us.end_date > now()
-        )
-        and (
-            st.features->>'features' ? p_feature_key
-            or st.features->>'ai_features' ? p_feature_key
-            or st.features->>'lifestyle_features' ? p_feature_key
-        )
-    ) into v_has_access;
-
-    -- If no subscription access, check individual feature unlock
-    if not v_has_access then
-        select exists (
-            select 1
-            from public.user_features uf
-            where uf.user_id = p_user_id
-            and uf.feature_key = p_feature_key
-            and uf.is_active
-            and (
-                uf.expires_at is null 
-                or uf.expires_at > now()
-            )
-        ) into v_has_access;
-    end if;
-
-    return v_has_access;
-end;
-$$;
-
--- Function to get user's subscription status
-create or replace function public.get_user_subscription_status(
-    p_user_id uuid
-)
-returns table (
-    tier_name text,
-    status text,
-    start_date timestamp with time zone,
-    end_date timestamp with time zone,
-    features jsonb
-)
-language plpgsql
-security definer
-as $$
-begin
-    return query
-    select 
-        st.name as tier_name,
-        us.status,
-        us.start_date,
-        us.end_date,
-        st.features
-    from public.user_subscriptions us
-    join public.subscription_tiers st on st.id = us.tier_id
-    where us.user_id = p_user_id
-    and us.status = 'active'
-    and (
-        us.end_date is null 
-        or us.end_date > now()
-    )
-    order by us.start_date desc
-    limit 1;
-end;
-$$;
-
--- Add RLS policies
-alter table public.subscription_tiers enable row level security;
+-- Enable RLS on subscription tables
+alter table public.subscription_plans enable row level security;
 alter table public.user_subscriptions enable row level security;
-alter table public.user_features enable row level security;
-alter table public.gift_subscriptions enable row level security;
+alter table public.payment_history enable row level security;
 
--- Subscription tiers policies
-create policy "Anyone can view subscription tiers"
-    on public.subscription_tiers for select
+-- Drop existing policies if they exist
+drop policy if exists "Anyone can view subscription plans" on public.subscription_plans;
+drop policy if exists "Users can view their own subscription" on public.user_subscriptions;
+drop policy if exists "Users can update their own subscription" on public.user_subscriptions;
+drop policy if exists "Users can insert their own subscription" on public.user_subscriptions;
+drop policy if exists "Users can view their own payment history" on public.payment_history;
+drop policy if exists "Users can insert their own payment history" on public.payment_history;
+
+-- Create RLS policies
+create policy "Anyone can view subscription plans"
+    on public.subscription_plans for select
     to authenticated
-    using (true);
+    using (is_active = true);
 
--- User subscriptions policies
-create policy "Users can view their own subscriptions"
+create policy "Users can view their own subscription"
     on public.user_subscriptions for select
     using (auth.uid() = user_id);
 
-create policy "Users can insert their own subscriptions"
+create policy "Users can update their own subscription"
+    on public.user_subscriptions for update
+    using (auth.uid() = user_id);
+
+create policy "Users can insert their own subscription"
     on public.user_subscriptions for insert
     with check (auth.uid() = user_id);
 
--- User features policies
-create policy "Users can view their own features"
-    on public.user_features for select
+create policy "Users can view their own payment history"
+    on public.payment_history for select
     using (auth.uid() = user_id);
 
-create policy "Users can insert their own features"
-    on public.user_features for insert
+create policy "Users can insert their own payment history"
+    on public.payment_history for insert
     with check (auth.uid() = user_id);
 
--- Gift subscriptions policies
-create policy "Users can view their own gift subscriptions"
-    on public.gift_subscriptions for select
-    using (auth.uid() = sender_id);
+-- Insert default subscription plans
+insert into public.subscription_plans (id, name, tier, price, currency, interval, features, is_popular)
+values 
+    ('free', 'Free', 'free', 0, 'USD', 'monthly', '["Access to basic lessons", "Limited hearts (5 per day)", "Basic progress tracking", "Community support"]', false),
+    ('premium_monthly', 'Premium', 'premium', 9.99, 'USD', 'monthly', '["All premium lessons", "Unlimited hearts", "Advanced exercises", "Download for offline use", "Progress insights", "Custom reminders", "Ad-free experience"]', true),
+    ('premium_yearly', 'Premium Yearly', 'premium', 79.99, 'USD', 'yearly', '["All premium lessons", "Unlimited hearts", "Advanced exercises", "Download for offline use", "Progress insights", "Custom reminders", "Ad-free experience", "2 months free!"]', false),
+    ('elite_monthly', 'Elite', 'elite', 19.99, 'USD', 'monthly', '["Everything in Premium", "Family sharing (up to 6 people)", "Priority support", "Exclusive addon packs", "Expert-level content", "Personal learning coach", "Early access to new features"]', false)
+on conflict (id) do nothing;
 
-create policy "Users can insert their own gift subscriptions"
-    on public.gift_subscriptions for insert
-    with check (auth.uid() = sender_id); 
+-- Function to create default subscription for new users
+create or replace function public.create_default_subscription()
+returns trigger as $$
+begin
+    insert into public.user_subscriptions (user_id, tier, tier_name)
+    values (new.id, 'free', 'Free');
+    return new;
+end;
+$$ language plpgsql security definer;
+
+-- Create trigger to automatically create subscription for new users
+drop trigger if exists on_user_created_subscription on public.profiles;
+create trigger on_user_created_subscription
+    after insert on public.profiles
+    for each row execute procedure public.create_default_subscription();
+
+-- Function to check if user has feature access
+create or replace function public.has_feature_access(
+    p_user_id uuid,
+    p_feature text
+)
+returns boolean as $$
+declare
+    v_tier text;
+    v_is_active boolean;
+    v_expires_at timestamp with time zone;
+begin
+    -- Get user's subscription info
+    select tier, is_active, expires_at
+    into v_tier, v_is_active, v_expires_at
+    from public.user_subscriptions
+    where user_id = p_user_id;
+    
+    -- If no subscription found, default to free
+    if v_tier is null then
+        v_tier := 'free';
+        v_is_active := true;
+    end if;
+    
+    -- Check if subscription is active and not expired
+    if not v_is_active or (v_expires_at is not null and v_expires_at < now()) then
+        v_tier := 'free';
+    end if;
+    
+    -- Check feature access based on tier
+    case v_tier
+        when 'free' then
+            return false; -- Free tier has no premium features
+        when 'premium' then
+            return p_feature in (
+                'premium_lessons',
+                'advanced_exercises', 
+                'unlimited_hearts',
+                'download_lessons',
+                'progress_insights',
+                'custom_reminders'
+            );
+        when 'elite' then
+            return p_feature in (
+                'premium_lessons',
+                'advanced_exercises',
+                'unlimited_hearts', 
+                'download_lessons',
+                'progress_insights',
+                'custom_reminders',
+                'family_sharing',
+                'priority_support',
+                'addon_packs',
+                'expert_content'
+            );
+        else
+            return false;
+    end case;
+end;
+$$ language plpgsql security definer;
+
+-- Create indexes for better performance
+create index if not exists idx_user_subscriptions_user_id on public.user_subscriptions(user_id);
+create index if not exists idx_user_subscriptions_tier on public.user_subscriptions(tier);
+create index if not exists idx_user_subscriptions_active on public.user_subscriptions(is_active);
+create index if not exists idx_payment_history_user_id on public.payment_history(user_id);
+create index if not exists idx_payment_history_status on public.payment_history(status);

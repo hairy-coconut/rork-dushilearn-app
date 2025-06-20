@@ -14,6 +14,7 @@ import { BlurView } from 'expo-blur';
 import * as Haptics from 'expo-haptics';
 import ConfettiCannon from 'react-native-confetti-cannon';
 import { Audio } from 'expo-av';
+import Colors from './constants/colors';
 
 interface RewardCelebrationModalProps {
     visible: boolean;
@@ -116,20 +117,22 @@ export function RewardCelebrationModal({
 
     const getRewardColor = () => {
         if (reward.specialReward) {
-            return ['#FFD700', '#FFA500'];
+            return Colors.gradients.sunset;
         }
 
         switch (reward.type) {
             case 'xp':
-                return ['#4CAF50', '#2E7D32'];
+                return Colors.gradients.success;
             case 'hearts':
-                return ['#F44336', '#C62828'];
+                return Colors.gradients.secondary;
             case 'streak_freeze':
-                return ['#2196F3', '#1565C0'];
+                return Colors.gradients.ocean;
             case 'gem':
-                return ['#9C27B0', '#6A1B9A'];
+                return Colors.gradients.primary;
+            case 'coconut':
+                return Colors.gradients.tropical;
             default:
-                return ['#757575', '#424242'];
+                return Colors.gradients.primary;
         }
     };
 
@@ -225,7 +228,7 @@ export function RewardCelebrationModal({
                     autoStart={false}
                     fadeOut={true}
                     fallSpeed={3000}
-                    colors={['#FFD700', '#FFA500', '#FF69B4', '#4CAF50', '#2196F3']}
+                    colors={[Colors.accent, Colors.secondary, Colors.primary, Colors.success, Colors.coralPink]}
                 />
             </View>
         </Modal>

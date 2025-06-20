@@ -1,10 +1,10 @@
 import React from 'react';
 import { StyleSheet, Text, View, ScrollView } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
-import Colors from '@/constants/colors';
-import { useProgressStore, getOverallProgress } from '@/store/progressStore';
-import { categories } from '@/constants/lessons';
-import ProgressBar from '@/components/ProgressBar';
+import Colors from '../../constants/colors';
+import { useProgressStore, getOverallProgress } from '../../store/progressStore';
+import { categories } from '../../constants/lessons';
+import ProgressBar from '../../components/ProgressBar';
 
 export default function ProgressScreen() {
   const { completedLessons, streak, xp, level } = useProgressStore();

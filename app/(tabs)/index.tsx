@@ -1,14 +1,25 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, Text, View, ScrollView, TouchableOpacity, Image, Alert } from 'react-native';
+import { StyleSheet, Text, View, ScrollView, TouchableOpacity, Image, Alert, Platform } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router';
 import { MaterialIcons } from '@expo/vector-icons';
-import Colors from '@/constants/colors';
-import { categories } from '@/constants/lessons';
-import { useProgressStore, getLevelProgress } from '@/store/progressStore';
-import ProgressBar from '@/components/ProgressBar';
-import LessonCard from '@/components/LessonCard';
-import MascotMessage from '@/components/MascotMessage';
-import { supabase } from '@/utils/supabase';
+import Colors from '../../constants/colors';
+import { categories } from '../../constants/lessons';
+import { useProgressStore, getLevelProgress } from '../../store/progressStore';
+import ProgressBar from '../../components/ProgressBar';
+import { LessonCard } from '../../components/LessonCard';
+import MascotMessage from '../../components/MascotMessage';
+import FloatingActionButton from '../../components/FloatingActionButton';
+import ComboDisplay from '../../components/ComboDisplay';
+import XPBoostDisplay from '../../components/XPBoostDisplay';
+import ComboCelebration from '../../components/ComboCelebration';
+import { comboManager, ComboState, COMBO_TIERS } from '../../utils/comboSystem';
+import { xpBoostManager, XPBoost } from '../../utils/xpBoosts';
+import { streakProtectionManager } from '../../utils/streakProtection';
+import { smartNotificationManager } from '../../utils/smartNotifications';
+import { mascotPersonalityManager } from '../../utils/mascotPersonality';
+import { supabase } from '../../utils/supabase';
+import { isSupabaseConfigured } from '../../constants/config';
 
 export default function HomeScreen() {
   const router = useRouter();
@@ -18,14 +29,25 @@ export default function HomeScreen() {
   const [mascotType, setMascotType] = useState<'coco' | 'lora'>('coco');
   const [supabaseStatus, setSupabaseStatus] = useState<string>('Checking...');
   
-  // Update streak when app opens and test Supabase connection
+  // New gamification states
+  const [comboState, setComboState] = useState<ComboState | null>(null);
+  const [activeBoosts, setActiveBoosts] = useState<XPBoost[]>([]);
+  const [showComboCelebration, setShowComboCelebration] = useState(false);
+  const [celebrationData, setCelebrationData] = useState<{
+    tier: typeof COMBO_TIERS[0];
+    combo: number;
+    bonusXP: number;
+  } | null>(null);
+  
+  // Initialize all systems when app opens
   useEffect(() => {
     updateStreak();
+    initializeGamificationSystems();
     
     // Load user preferences
     const loadPreferences = async () => {
       try {
-        const preferredMascot = await localStorage.getItem('preferred_mascot');
+        const preferredMascot = await AsyncStorage.getItem('preferred_mascot');
         if (preferredMascot) {
           setMascotType(preferredMascot as 'coco' | 'lora');
         }
@@ -74,6 +96,39 @@ export default function HomeScreen() {
   }, []);
   
   // Find the first incomplete lesson
+  // Initialize all gamification systems
+  const initializeGamificationSystems = async () => {
+    try {
+      // Initialize combo system
+      const combo = await comboManager.loadComboState();
+      setComboState(combo);
+
+      // Initialize XP boosts
+      const boostState = await xpBoostManager.loadBoostState();
+      setActiveBoosts(boostState.activeBoosts);
+
+      // Initialize streak protection
+      await streakProtectionManager.loadStreakState();
+
+      // Initialize smart notifications
+      await smartNotificationManager.initialize();
+
+      // Initialize mascot personality
+      const mascotState = await mascotPersonalityManager.loadMascotState();
+      setMascotType(mascotState.preferredMascot);
+
+      // Schedule smart notifications based on user behavior
+      if (streak > 0) {
+        const hoursUntilLoss = streakProtectionManager.getHoursUntilStreakLoss();
+        await smartNotificationManager.scheduleStreakReminder(streak, hoursUntilLoss);
+      }
+
+      console.log('🎮 All gamification systems initialized!');
+    } catch (error) {
+      console.error('Error initializing gamification systems:', error);
+    }
+  };
+
   const findNextLesson = () => {
     for (const category of categories) {
       for (const lesson of category.lessons) {
@@ -101,7 +156,8 @@ export default function HomeScreen() {
   const dailyGoalProgress = completedLessons.length > 0 ? 1 : 0;
   
   return (
-    <ScrollView style={styles.container} contentContainerStyle={styles.content}>
+    <View style={styles.container}>
+      <ScrollView style={styles.scrollView} contentContainerStyle={styles.content}>
       {/* Header with user stats */}
       <View style={styles.header}>
         <View style={styles.userStats}>
@@ -183,7 +239,59 @@ export default function HomeScreen() {
           onDismiss={() => setShowMascot(false)}
         />
       )}
-    </ScrollView>
+      </ScrollView>
+      
+      {/* Combo Display */}
+      {comboState && (
+        <ComboDisplay
+          comboState={comboState}
+          visible={comboState.currentCombo > 0}
+          onTierUp={(tier) => {
+            setCelebrationData({
+              tier,
+              combo: comboState.currentCombo,
+              bonusXP: 50 * tier.multiplier,
+            });
+            setShowComboCelebration(true);
+          }}
+        />
+      )}
+
+      {/* Active XP Boosts */}
+      {activeBoosts.length > 0 && (
+        <View style={styles.boostsContainer}>
+          {activeBoosts.slice(0, 2).map((boost, index) => (
+            <XPBoostDisplay
+              key={boost.id}
+              boost={boost}
+              compact={true}
+            />
+          ))}
+        </View>
+      )}
+
+      {/* Floating Action Button */}
+      <FloatingActionButton
+        title="Continue Learning"
+        icon="play-circle"
+        onPress={handleContinue}
+        visible={true}
+      />
+
+      {/* Combo Celebration Modal */}
+      {showComboCelebration && celebrationData && (
+        <ComboCelebration
+          visible={showComboCelebration}
+          tier={celebrationData.tier}
+          combo={celebrationData.combo}
+          bonusXP={celebrationData.bonusXP}
+          onComplete={() => {
+            setShowComboCelebration(false);
+            setCelebrationData(null);
+          }}
+        />
+      )}
+    </View>
   );
 }
 
@@ -191,6 +299,9 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: Colors.background,
+  },
+  scrollView: {
+    flex: 1,
   },
   content: {
     padding: 16,
@@ -296,5 +407,13 @@ const styles = StyleSheet.create({
   supabaseStatusText: {
     fontSize: 12,
     color: Colors.textLight,
+  },
+  boostsContainer: {
+    position: 'absolute',
+    top: 50,
+    left: 16,
+    flexDirection: 'row',
+    gap: 8,
+    zIndex: 999,
   },
 });

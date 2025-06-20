@@ -2,10 +2,10 @@ import React from 'react';
 import { StyleSheet, Text, View, ScrollView, TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router';
 import { MaterialIcons } from '@expo/vector-icons';
-import Colors from '@/constants/colors';
-import BadgeItem from '@/components/BadgeItem';
-import { useBadgeStore } from '@/store/badgeStore';
-import { useProgressStore } from '@/store/progressStore';
+import Colors from '../constants/colors';
+import BadgeItem from '../components/BadgeItem';
+import { useBadgeStore } from '../store/badgeStore';
+import { useProgressStore } from '../store/progressStore';
 import { Platform } from 'react-native';
 
 export default function BadgesScreen() {

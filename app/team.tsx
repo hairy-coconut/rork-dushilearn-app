@@ -12,7 +12,7 @@ import {
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { BlurView } from 'expo-blur';
-import { useTheme } from '../contexts/ThemeContext';
+import Colors from "../constants/colors";
 import { useUser } from '../contexts/AuthContext';
 import {
     getTeam,
@@ -88,7 +88,7 @@ const TeamScreen = () => {
     const renderTeamOverview = () => (
         <View style={styles.overviewContainer}>
             <LinearGradient
-                colors={[theme.colors.primary, theme.colors.secondary]}
+                colors={[Colors.primary, Colors.secondary]}
                 style={styles.teamCard}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 1 }}
@@ -130,7 +130,7 @@ const TeamScreen = () => {
                 <Text style={styles.progressTitle}>Weekly Goal</Text>
                 <View style={styles.progressBar}>
                     <LinearGradient
-                        colors={[theme.colors.primary, theme.colors.secondary]}
+                        colors={[Colors.primary, Colors.secondary]}
                         style={[
                             styles.progressFill,
                             { width: `${(team?.weekly_progress || 0) / (team?.weekly_goal || 1) * 100}%` },
@@ -190,7 +190,7 @@ const TeamScreen = () => {
                                 <MaterialCommunityIcons
                                     name="star"
                                     size={16}
-                                    color={theme.colors.primary}
+                                    color={Colors.primary}
                                 />
                                 <Text style={styles.statText}>{member.xp}</Text>
                             </View>
@@ -198,7 +198,7 @@ const TeamScreen = () => {
                                 <MaterialCommunityIcons
                                     name="fire"
                                     size={16}
-                                    color={theme.colors.secondary}
+                                    color={Colors.secondary}
                                 />
                                 <Text style={styles.statText}>{member.streak}</Text>
                             </View>
@@ -235,7 +235,7 @@ const TeamScreen = () => {
                             <MaterialCommunityIcons
                                 name={challenge.type === 'daily' ? 'calendar-today' : 'calendar-week'}
                                 size={24}
-                                color={theme.colors.primary}
+                                color={Colors.primary}
                             />
                             <Text style={styles.challengeTitle}>{challenge.title}</Text>
                         </View>
@@ -245,7 +245,7 @@ const TeamScreen = () => {
                         <View style={styles.challengeProgress}>
                             <View style={styles.progressBar}>
                                 <LinearGradient
-                                    colors={[theme.colors.primary, theme.colors.secondary]}
+                                    colors={[Colors.primary, Colors.secondary]}
                                     style={[
                                         styles.progressFill,
                                         { width: `${challenge.participants.length / challenge.requirements.min_participants * 100}%` },
@@ -262,7 +262,7 @@ const TeamScreen = () => {
                             <MaterialCommunityIcons
                                 name="gift"
                                 size={20}
-                                color={theme.colors.primary}
+                                color={Colors.primary}
                             />
                             <Text style={styles.rewardText}>
                                 {challenge.reward.xp} XP + {challenge.reward.coconuts} Coconuts
@@ -275,9 +275,9 @@ const TeamScreen = () => {
     );
 
     return (
-        <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
+        <View style={[styles.container, { backgroundColor: Colors.background }]}>
             <LinearGradient
-                colors={[theme.colors.primary, theme.colors.secondary]}
+                colors={[Colors.primary, Colors.secondary]}
                 style={styles.header}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 1 }}
@@ -294,7 +294,7 @@ const TeamScreen = () => {
                         <MaterialCommunityIcons
                             name="information"
                             size={20}
-                            color={selectedTab === 'overview' ? '#fff' : theme.colors.primary}
+                            color={selectedTab === 'overview' ? '#fff' : Colors.primary}
                         />
                         <Text style={[
                             styles.tabText,
@@ -313,7 +313,7 @@ const TeamScreen = () => {
                         <MaterialCommunityIcons
                             name="account-group"
                             size={20}
-                            color={selectedTab === 'members' ? '#fff' : theme.colors.primary}
+                            color={selectedTab === 'members' ? '#fff' : Colors.primary}
                         />
                         <Text style={[
                             styles.tabText,
@@ -332,7 +332,7 @@ const TeamScreen = () => {
                         <MaterialCommunityIcons
                             name="trophy"
                             size={20}
-                            color={selectedTab === 'challenges' ? '#fff' : theme.colors.primary}
+                            color={selectedTab === 'challenges' ? '#fff' : Colors.primary}
                         />
                         <Text style={[
                             styles.tabText,
@@ -471,7 +471,7 @@ const styles = StyleSheet.create({
         textAlign: 'center',
     },
     joinButton: {
-        backgroundColor: theme.colors.primary,
+        backgroundColor: Colors.primary,
         borderRadius: 12,
         padding: 16,
         alignItems: 'center',
@@ -482,7 +482,7 @@ const styles = StyleSheet.create({
         fontWeight: '600',
     },
     leaveButton: {
-        backgroundColor: theme.colors.error,
+        backgroundColor: Colors.error,
         borderRadius: 12,
         padding: 16,
         alignItems: 'center',

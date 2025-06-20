@@ -12,7 +12,7 @@ import {
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { BlurView } from 'expo-blur';
-import { useTheme } from '../contexts/ThemeContext';
+import Colors from './constants/colors';
 import { useUser } from '../contexts/UserContext';
 import { IslandStory, StoryDialogue } from '../utils/stories';
 import * as Haptics from 'expo-haptics';
@@ -87,23 +87,23 @@ export default function StoryViewerScreen({ storyId }: StoryViewerProps) {
                         style={styles.characterImage}
                     />
                     <View>
-                        <Text style={[styles.characterName, { color: theme.colors.text }]}>
+                        <Text style={[styles.characterName, { color: Colors.text }]}>
                             {character?.name}
                         </Text>
-                        <Text style={[styles.characterRole, { color: theme.colors.textSecondary }]}>
+                        <Text style={[styles.characterRole, { color: Colors.textLight }]}>
                             {character?.role}
                         </Text>
                     </View>
                 </View>
 
-                <View style={[styles.dialogueBubble, { backgroundColor: theme.colors.card }]}>
-                    <Text style={[styles.dialogueText, { color: theme.colors.text }]}>
+                <View style={[styles.dialogueBubble, { backgroundColor: Colors.card }]}>
+                    <Text style={[styles.dialogueText, { color: Colors.text }]}>
                         {dialogue.text}
                     </Text>
                 </View>
 
                 {showTranslation && (
-                    <View style={[styles.translationBubble, { backgroundColor: theme.colors.primary }]}>
+                    <View style={[styles.translationBubble, { backgroundColor: Colors.primary }]}>
                         <Text style={styles.translationText}>
                             {dialogue.translation}
                         </Text>
@@ -111,13 +111,13 @@ export default function StoryViewerScreen({ storyId }: StoryViewerProps) {
                 )}
 
                 {dialogue.cultural_note && showCulturalNote && (
-                    <View style={[styles.culturalNote, { backgroundColor: theme.colors.card }]}>
+                    <View style={[styles.culturalNote, { backgroundColor: Colors.card }]}>
                         <MaterialCommunityIcons
                             name="information"
                             size={24}
-                            color={theme.colors.primary}
+                            color={Colors.primary}
                         />
-                        <Text style={[styles.culturalNoteText, { color: theme.colors.text }]}>
+                        <Text style={[styles.culturalNoteText, { color: Colors.text }]}>
                             {dialogue.cultural_note}
                         </Text>
                     </View>
@@ -128,16 +128,16 @@ export default function StoryViewerScreen({ storyId }: StoryViewerProps) {
 
     if (loading) {
         return (
-            <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
-                <ActivityIndicator size="large" color={theme.colors.primary} />
+            <View style={[styles.container, { backgroundColor: Colors.background }]}>
+                <ActivityIndicator size="large" color={Colors.primary} />
             </View>
         );
     }
 
     if (!story) {
         return (
-            <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
-                <Text style={[styles.errorText, { color: theme.colors.text }]}>
+            <View style={[styles.container, { backgroundColor: Colors.background }]}>
+                <Text style={[styles.errorText, { color: Colors.text }]}>
                     Story not found
                 </Text>
             </View>
@@ -145,9 +145,9 @@ export default function StoryViewerScreen({ storyId }: StoryViewerProps) {
     }
 
     return (
-        <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
+        <View style={[styles.container, { backgroundColor: Colors.background }]}>
             <LinearGradient
-                colors={[theme.colors.primary, theme.colors.secondary]}
+                colors={[Colors.primary, Colors.secondary]}
                 style={styles.header}
             >
                 <TouchableOpacity
@@ -164,7 +164,7 @@ export default function StoryViewerScreen({ storyId }: StoryViewerProps) {
                 {renderDialogue(story.dialogues[currentDialogue])}
             </ScrollView>
 
-            <View style={[styles.controls, { backgroundColor: theme.colors.card }]}>
+            <View style={[styles.controls, { backgroundColor: Colors.card }]}>
                 <TouchableOpacity
                     style={styles.controlButton}
                     onPress={handlePreviousDialogue}
@@ -173,7 +173,7 @@ export default function StoryViewerScreen({ storyId }: StoryViewerProps) {
                     <MaterialCommunityIcons
                         name="arrow-left"
                         size={24}
-                        color={currentDialogue === 0 ? theme.colors.textSecondary : theme.colors.text}
+                        color={currentDialogue === 0 ? Colors.textLight : Colors.text}
                     />
                 </TouchableOpacity>
 
@@ -184,7 +184,7 @@ export default function StoryViewerScreen({ storyId }: StoryViewerProps) {
                     <MaterialCommunityIcons
                         name="translate"
                         size={24}
-                        color={theme.colors.text}
+                        color={Colors.text}
                     />
                 </TouchableOpacity>
 
@@ -196,7 +196,7 @@ export default function StoryViewerScreen({ storyId }: StoryViewerProps) {
                     <MaterialCommunityIcons
                         name="information"
                         size={24}
-                        color={story.dialogues[currentDialogue].cultural_note ? theme.colors.text : theme.colors.textSecondary}
+                        color={story.dialogues[currentDialogue].cultural_note ? Colors.text : Colors.textLight}
                     />
                 </TouchableOpacity>
 
@@ -208,7 +208,7 @@ export default function StoryViewerScreen({ storyId }: StoryViewerProps) {
                     <MaterialCommunityIcons
                         name="arrow-right"
                         size={24}
-                        color={currentDialogue === story.dialogues.length - 1 ? theme.colors.textSecondary : theme.colors.text}
+                        color={currentDialogue === story.dialogues.length - 1 ? Colors.textLight : Colors.text}
                     />
                 </TouchableOpacity>
             </View>

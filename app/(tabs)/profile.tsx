@@ -2,12 +2,12 @@ import React, { useEffect } from 'react';
 import { StyleSheet, Text, View, ScrollView, TouchableOpacity, Switch, Alert, Image } from 'react-native';
 import { useRouter } from 'expo-router';
 import { MaterialIcons } from '@expo/vector-icons';
-import Colors from '@/constants/colors';
-import ProfileHeader from '@/components/ProfileHeader';
-import { useProgressStore, getLevelProgress } from '@/store/progressStore';
-import { useBadgeStore } from '@/store/badgeStore';
-import { useAuthStore } from '@/store/authStore';
-import BadgeItem from '@/components/BadgeItem';
+import Colors from '../../constants/colors';
+import ProfileHeader from '../../components/ProfileHeader';
+import { useProgressStore, getLevelProgress } from '../../store/progressStore';
+import { useBadgeStore } from '../../store/badgeStore';
+import { useAuthStore } from '../../store/authStore';
+import BadgeItem from '../../components/BadgeItem';
 import { Platform } from 'react-native';
 
 export default function ProfileScreen() {

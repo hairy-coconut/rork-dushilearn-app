@@ -21,7 +21,7 @@ import {
   ShopCategory,
 } from '../../utils/shop';
 import { useUser } from '../../contexts/AuthContext';
-import { useTheme } from '../../contexts/ThemeContext';
+import Colors from '../../constants/colors';
 
 const { width } = Dimensions.get('window');
 
@@ -77,20 +77,20 @@ const ShopScreen = () => {
       key={cat.id}
       style={[
         styles.categoryButton,
-        selectedCategory === cat.id && { backgroundColor: theme.colors.primary },
+        selectedCategory === cat.id && { backgroundColor: Colors.primary },
       ]}
       onPress={() => setSelectedCategory(cat.id)}
       activeOpacity={0.8}
     >
-      <MaterialCommunityIcons name={cat.icon as any} size={20} color={theme.colors.text} />
-      <Text style={[styles.categoryText, { color: theme.colors.text }]}>{cat.name}</Text>
+      <MaterialCommunityIcons name={cat.icon as any} size={20} color={Colors.text} />
+      <Text style={[styles.categoryText, { color: Colors.text }]}>{cat.name}</Text>
     </TouchableOpacity>
   );
 
   return (
-    <View style={[styles.container, { backgroundColor: theme.colors.background }]}> 
+    <View style={[styles.container, { backgroundColor: Colors.background }]}> 
       <LinearGradient
-        colors={[theme.colors.primary, theme.colors.secondary]}
+        colors={[Colors.primary, Colors.secondary]}
         style={styles.header}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
@@ -113,7 +113,7 @@ const ShopScreen = () => {
       </ScrollView>
       <View style={styles.itemsContainer}>
         {loading ? (
-          <ActivityIndicator size="large" color={theme.colors.primary} style={{ marginTop: 40 }} />
+          <ActivityIndicator size="large" color={Colors.primary} style={{ marginTop: 40 }} />
         ) : (
           <FlatList
             data={items}

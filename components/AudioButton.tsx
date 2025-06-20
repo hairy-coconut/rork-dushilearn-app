@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { StyleSheet, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
-import Colors from '@/constants/colors';
-import { playAudio } from '@/constants/audio';
+import Colors from '../constants/colors';
+import { playAudio } from '../constants/audio';
 
 type AudioButtonProps = {
   audioUrl: string;

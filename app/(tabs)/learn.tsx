@@ -20,7 +20,7 @@ import {
     LearningPath,
 } from '../../utils/learningPaths';
 import { useUser } from '../../contexts/AuthContext';
-import { useTheme } from '../../contexts/ThemeContext';
+import Colors from '../../constants/colors';
 import { useNavigation } from '@react-navigation/native';
 
 const { width } = Dimensions.get('window');
@@ -101,9 +101,9 @@ const LearnScreen = () => {
     };
 
     return (
-        <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
+        <View style={[styles.container, { backgroundColor: Colors.background }]}>
             <LinearGradient
-                colors={[theme.colors.primary, theme.colors.secondary]}
+                colors={[Colors.primary, Colors.secondary]}
                 style={styles.header}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 1 }}
@@ -142,7 +142,7 @@ const LearnScreen = () => {
 
             {loading ? (
                 <View style={styles.loadingContainer}>
-                    <ActivityIndicator size="large" color={theme.colors.primary} />
+                    <ActivityIndicator size="large" color={Colors.primary} />
                 </View>
             ) : (
                 <ScrollView
@@ -176,7 +176,7 @@ const LearnScreen = () => {
                         }}
                     >
                         <LinearGradient
-                            colors={[theme.colors.primary, theme.colors.secondary]}
+                            colors={[Colors.primary, Colors.secondary]}
                             style={styles.fabGradient}
                             start={{ x: 0, y: 0 }}
                             end={{ x: 1, y: 1 }}

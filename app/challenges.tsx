@@ -10,7 +10,7 @@ import {
   Alert,
 } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { useTheme } from '../contexts/ThemeContext';
+import Colors from "../constants/colors";
 import { useAuth } from '../contexts/AuthContext';
 import {
   getChallenges,
@@ -83,15 +83,15 @@ export default function ChallengesScreen() {
   if (loading && !refreshing) {
     return (
       <View style={[styles.container, styles.loadingContainer]}>
-        <ActivityIndicator size="large" color={theme.colors.primary} />
+        <ActivityIndicator size="large" color={Colors.primary} />
       </View>
     );
   }
 
   return (
-    <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
+    <View style={[styles.container, { backgroundColor: Colors.background }]}>
       <View style={styles.header}>
-        <Text style={[styles.title, { color: theme.colors.text }]}>Challenges</Text>
+        <Text style={[styles.title, { color: Colors.text }]}>Challenges</Text>
         <TouchableOpacity
           style={styles.createButton}
           onPress={handleCreateChallenge}
@@ -99,7 +99,7 @@ export default function ChallengesScreen() {
           <MaterialCommunityIcons
             name="plus"
             size={24}
-            color={theme.colors.primary}
+            color={Colors.primary}
           />
         </TouchableOpacity>
       </View>
@@ -111,7 +111,7 @@ export default function ChallengesScreen() {
           <RefreshControl
             refreshing={refreshing}
             onRefresh={handleRefresh}
-            tintColor={theme.colors.primary}
+            tintColor={Colors.primary}
           />
         }
       >
@@ -120,16 +120,16 @@ export default function ChallengesScreen() {
             <MaterialCommunityIcons
               name="trophy-outline"
               size={48}
-              color={theme.colors.textSecondary}
+              color={Colors.textLight}
             />
-            <Text style={[styles.emptyText, { color: theme.colors.textSecondary }]}>
+            <Text style={[styles.emptyText, { color: Colors.textLight }]}>
               No active challenges
             </Text>
             <TouchableOpacity
-              style={[styles.createFirstButton, { backgroundColor: theme.colors.primary }]}
+              style={[styles.createFirstButton, { backgroundColor: Colors.primary }]}
               onPress={handleCreateChallenge}
             >
-              <Text style={[styles.createFirstButtonText, { color: theme.colors.text }]}>
+              <Text style={[styles.createFirstButtonText, { color: Colors.text }]}>
                 Create Your First Challenge
               </Text>
             </TouchableOpacity>

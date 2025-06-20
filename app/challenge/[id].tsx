@@ -13,9 +13,9 @@ import {
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
-import Colors from '@/constants/colors';
-import { socialApi } from '@/utils/socialApi';
-import { notificationManager } from '@/utils/notificationManager';
+import Colors from '../constants/colors';
+import { socialApi } from '../utils/socialApi';
+import { notificationManager } from '../utils/notificationManager';
 
 // ... (keep existing interfaces)
 

@@ -64,7 +64,7 @@ const PRICING_TIERS = [
       'Invite to private Coconut Club community',
       'Bonus phrase packs: Beach Dates, Emergencies, Party Talk',
     ],
-    emotionalHook: 'It's more than language — it's access. It's freedom. It's your personal island guide in your pocket.',
+    emotionalHook: 'It\'s more than language — it\'s access. It\'s freedom. It\'s your personal island guide in your pocket.',
     cta: 'Go Monthly – $7.99/month',
     ctaAction: () => {},
     ctaSecondary: 'Go All-In – $69.99 Lifetime Access',
@@ -83,7 +83,7 @@ const FAQ = [
   },
   {
     question: 'Is the AI translator accurate?',
-    answer: 'Yes — and even better, it's trained with island slang, cultural context, and local flavor.',
+    answer: 'Yes — and even better, it\'s trained with island slang, cultural context, and local flavor.',
   },
 ];
 

@@ -2,9 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, Image, ActivityIndicator, Alert } from 'react-native';
 import { useRouter } from 'expo-router';
 import { MaterialIcons } from '@expo/vector-icons';
-import Colors from '@/constants/colors';
-import { useAuthStore } from '@/store/authStore';
-import { supabase } from '@/utils/supabase';
+import Colors from '../constants/colors';
+import { useAuthStore } from '../store/authStore';
+import { supabase } from '../utils/supabase';
 
 export default function LoginScreen() {
   const router = useRouter();

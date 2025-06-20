@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
+import { supabase } from '../utils/supabase';
 
 type User = {
   id: string;
@@ -19,6 +20,17 @@ type AuthState = {
   updateUser: (userData: Partial<User>) => Promise<void>;
   resetError: () => void;
 };
+
+// Get storage based on platform
+const getStorage = () => {
+  if (typeof window !== 'undefined') {
+    return window.localStorage;
+  } else {
+    return require('@react-native-async-storage/async-storage').default;
+  }
+};
+
+const storage = getStorage();
 
 export const useAuthStore = create<AuthState>()(
   persist(
@@ -44,7 +56,11 @@ export const useAuthStore = create<AuthState>()(
             };
             
             set({ user: testUser, isAuthenticated: true, isLoading: false });
-            await storage.setItem('user_authenticated', 'true');
+            if (typeof window !== 'undefined') {
+              storage.setItem('user_authenticated', 'true');
+            } else {
+              await storage.setItem('user_authenticated', 'true');
+            }
             console.log('Test login successful');
             return;
           }
@@ -86,7 +102,11 @@ export const useAuthStore = create<AuthState>()(
             };
             
             set({ user, isAuthenticated: true, isLoading: false });
-            await storage.setItem('user_authenticated', 'true');
+            if (typeof window !== 'undefined') {
+              storage.setItem('user_authenticated', 'true');
+            } else {
+              await storage.setItem('user_authenticated', 'true');
+            }
             console.log('Login successful');
           }
         } catch (error: any) {
@@ -111,7 +131,11 @@ export const useAuthStore = create<AuthState>()(
             };
             
             set({ user: testUser, isAuthenticated: true, isLoading: false });
-            await storage.setItem('user_authenticated', 'true');
+            if (typeof window !== 'undefined') {
+              storage.setItem('user_authenticated', 'true');
+            } else {
+              await storage.setItem('user_authenticated', 'true');
+            }
             console.log('Test signup successful');
             return;
           }
@@ -153,7 +177,11 @@ export const useAuthStore = create<AuthState>()(
             };
             
             set({ user, isAuthenticated: true, isLoading: false });
-            await storage.setItem('user_authenticated', 'true');
+            if (typeof window !== 'undefined') {
+              storage.setItem('user_authenticated', 'true');
+            } else {
+              await storage.setItem('user_authenticated', 'true');
+            }
             console.log('Signup successful');
           }
         } catch (error: any) {
@@ -169,7 +197,11 @@ export const useAuthStore = create<AuthState>()(
           if (error) throw error;
           
           set({ user: null, isAuthenticated: false, isLoading: false });
-          await storage.setItem('user_authenticated', 'false');
+          if (typeof window !== 'undefined') {
+            storage.setItem('user_authenticated', 'false');
+          } else {
+            await storage.setItem('user_authenticated', 'false');
+          }
         } catch (error: any) {
           console.error('Logout error:', error.message);
           set({ error: error.message, isLoading: false });

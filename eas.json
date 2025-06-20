@@ -22,6 +22,13 @@
         "buildType": "apk"
       }
     },
+    "testflight": {
+      "distribution": "store",
+      "ios": {
+        "simulator": false,
+        "buildConfiguration": "Release"
+      }
+    },
     "production": {
       "autoIncrement": true
     }

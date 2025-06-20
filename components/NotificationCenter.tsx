@@ -10,8 +10,8 @@ import {
 } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
-import Colors from '@/constants/colors';
-import { socialApi } from '@/utils/socialApi';
+import Colors from './constants/colors';
+import { socialApi } from './utils/socialApi';
 
 interface Notification {
   id: string;

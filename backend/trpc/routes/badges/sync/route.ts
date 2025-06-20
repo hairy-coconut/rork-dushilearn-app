@@ -1,6 +1,6 @@
 import { z } from "zod";
-import { publicProcedure } from "@/backend/trpc/create-context";
-import { supabase } from '@/utils/supabase';
+import { publicProcedure } from '../../backend/trpc/create-context';
+import { supabase } from '../../utils/supabase';
 
 export const syncBadgesProcedure = publicProcedure
   .input(z.object({

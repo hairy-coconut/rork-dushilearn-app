@@ -10,8 +10,8 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import Colors from '@/constants/colors';
-import { socialApi } from '@/utils/socialApi';
+import Colors from './constants/colors';
+import { socialApi } from './utils/socialApi';
 
 interface CreateChallengeModalProps {
   visible: boolean;

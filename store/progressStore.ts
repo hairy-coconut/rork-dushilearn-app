@@ -1,8 +1,8 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
-import { categories } from '@/constants/lessons';
+import { categories } from '../constants/lessons';
 import { useBadgeStore } from './badgeStore';
-import { supabase } from '@/utils/supabase';
+import { supabase } from '../utils/supabase';
 import { useAuthStore } from './authStore';
 
 type LessonProgress = {

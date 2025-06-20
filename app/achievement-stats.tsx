@@ -2,9 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, ActivityIndicator, TouchableOpacity } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Stack, router } from 'expo-router';
-import Colors from '@/constants/colors';
-import { AchievementStats, getAchievementStats, getAchievementProgressTrend, getAchievementRecommendations, getAchievementMilestones } from '@/utils/achievementStats';
-import { Achievement } from '@/utils/achievements';
+import Colors from './constants/colors';
+import { AchievementStats, getAchievementStats, getAchievementProgressTrend, getAchievementRecommendations, getAchievementMilestones } from './utils/achievementStats';
+import { Achievement } from './utils/achievements';
 
 type Timeframe = 'daily' | 'weekly' | 'monthly' | 'all';
 

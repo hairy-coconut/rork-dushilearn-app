@@ -1,8 +1,8 @@
-import { UserProgress, Achievement, Level, LearningPath } from '@/constants/types';
+import { UserProgress, Achievement, Level, LearningPath } from './constants/types';
 import { userProgressApi, achievementsApi } from './supabase';
 import { supabase } from './supabase';
 import { getCurrentUser } from './supabase';
-import { FEATURE_KEYS } from '@/types/subscription';
+import { FEATURE_KEYS } from './types/subscription';
 
 const PROGRESS_STORAGE_KEY = '@user_progress';
 const ACHIEVEMENTS_STORAGE_KEY = '@achievements';

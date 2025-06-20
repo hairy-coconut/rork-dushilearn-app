@@ -12,8 +12,8 @@ import {
 } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { supabase } from '@/utils/supabase';
-import { getCurrentUser } from '@/utils/auth';
+import { supabase } from './utils/supabase';
+import { getCurrentUser } from './utils/auth';
 import { LinearGradient } from 'expo-linear-gradient';
 import * as Haptics from 'expo-haptics';
 import {
@@ -21,7 +21,7 @@ import {
   FillInBlankExercise,
   MatchingExercise,
   ListeningExercise,
-} from '@/components/exercises';
+} from './components/exercises';
 
 const { width } = Dimensions.get('window');
 

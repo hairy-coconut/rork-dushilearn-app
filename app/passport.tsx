@@ -12,7 +12,7 @@ import {
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { BlurView } from 'expo-blur';
-import { useTheme } from '../contexts/ThemeContext';
+import Colors from './constants/colors';
 import { useUser } from '../contexts/AuthContext';
 import * as Haptics from 'expo-haptics';
 
@@ -131,7 +131,7 @@ const PassportScreen = () => {
             }}
         >
             <LinearGradient
-                colors={[theme.colors.primary, theme.colors.secondary]}
+                colors={[Colors.primary, Colors.secondary]}
                 style={styles.stampIconContainer}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 1 }}
@@ -161,9 +161,9 @@ const PassportScreen = () => {
     );
 
     return (
-        <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
+        <View style={[styles.container, { backgroundColor: Colors.background }]}>
             <LinearGradient
-                colors={[theme.colors.primary, theme.colors.secondary]}
+                colors={[Colors.primary, Colors.secondary]}
                 style={styles.header}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 1 }}
@@ -197,7 +197,7 @@ const PassportScreen = () => {
                                     'earth'
                                 }
                                 size={24}
-                                color={selectedPage === page.id ? '#fff' : theme.colors.primary}
+                                color={selectedPage === page.id ? '#fff' : Colors.primary}
                             />
                             <Text style={[
                                 styles.pageText,
@@ -295,7 +295,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#f0f0f0',
     },
     selectedPageButton: {
-        backgroundColor: theme.colors.primary,
+        backgroundColor: Colors.primary,
     },
     lockedPageButton: {
         opacity: 0.5,
@@ -304,7 +304,7 @@ const styles = StyleSheet.create({
         marginLeft: 8,
         fontSize: 14,
         fontWeight: '600',
-        color: theme.colors.primary,
+        color: Colors.primary,
     },
     selectedPageText: {
         color: '#fff',
@@ -388,7 +388,7 @@ const styles = StyleSheet.create({
     statValue: {
         fontSize: 24,
         fontWeight: 'bold',
-        color: theme.colors.primary,
+        color: Colors.primary,
     },
     statLabel: {
         fontSize: 12,

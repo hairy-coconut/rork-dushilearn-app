@@ -10,7 +10,7 @@ import {
     RefreshControl,
 } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { useTheme } from '../contexts/ThemeContext';
+import Colors from './constants/colors';
 import { router } from 'expo-router';
 import { supabase } from '../utils/supabase';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -210,14 +210,14 @@ export default function LearningPathsScreen() {
 
     if (loading) {
         return (
-            <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
-                <ActivityIndicator size="large" color={theme.colors.primary} />
+            <View style={[styles.container, { backgroundColor: Colors.background }]}>
+                <ActivityIndicator size="large" color={Colors.primary} />
             </View>
         );
     }
 
     return (
-        <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
+        <View style={[styles.container, { backgroundColor: Colors.background }]}>
             <ScrollView
                 style={styles.scrollView}
                 refreshControl={
@@ -225,10 +225,10 @@ export default function LearningPathsScreen() {
                 }
             >
                 <View style={styles.header}>
-                    <Text style={[styles.title, { color: theme.colors.text }]}>
+                    <Text style={[styles.title, { color: Colors.text }]}>
                         Learning Path
                     </Text>
-                    <Text style={[styles.subtitle, { color: theme.colors.textSecondary }]}>
+                    <Text style={[styles.subtitle, { color: Colors.textLight }]}>
                         Master Papiamento at your own pace
                     </Text>
                 </View>
@@ -241,7 +241,7 @@ export default function LearningPathsScreen() {
                 />
 
                 <View style={styles.achievementsContainer}>
-                    <Text style={[styles.sectionTitle, { color: theme.colors.text }]}>
+                    <Text style={[styles.sectionTitle, { color: Colors.text }]}>
                         Recent Achievements
                     </Text>
                     {achievements.slice(0, 3).map((achievement) => (
@@ -275,9 +275,9 @@ export default function LearningPathsScreen() {
                             <Text
                                 style={[
                                     styles.moduleTitle,
-                                    { color: theme.colors.text },
+                                    { color: Colors.text },
                                     selectedModule?.id === module.id && {
-                                        color: theme.colors.primary,
+                                        color: Colors.primary,
                                     },
                                 ]}
                             >
@@ -290,13 +290,13 @@ export default function LearningPathsScreen() {
                 {selectedModule && (
                     <View style={styles.moduleContent}>
                         <View style={styles.moduleHeader}>
-                            <Text style={[styles.moduleHeaderTitle, { color: theme.colors.text }]}>
+                            <Text style={[styles.moduleHeaderTitle, { color: Colors.text }]}>
                                 {selectedModule.title}
                             </Text>
                             <Text
                                 style={[
                                     styles.moduleHeaderDescription,
-                                    { color: theme.colors.textSecondary },
+                                    { color: Colors.textLight },
                                 ]}
                             >
                                 {selectedModule.description}

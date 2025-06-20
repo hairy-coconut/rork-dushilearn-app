@@ -12,7 +12,7 @@ import {
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { BlurView } from 'expo-blur';
-import { useTheme } from '../contexts/ThemeContext';
+import Colors from './constants/colors';
 import { useUser } from '../contexts/AuthContext';
 import {
     getUserProfile,
@@ -59,7 +59,7 @@ const ProfileScreen = () => {
     const renderProfileOverview = () => (
         <View style={styles.overviewContainer}>
             <LinearGradient
-                colors={[theme.colors.primary, theme.colors.secondary]}
+                colors={[Colors.primary, Colors.secondary]}
                 style={styles.profileCard}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 1 }}
@@ -105,7 +105,7 @@ const ProfileScreen = () => {
                 <Text style={styles.progressTitle}>Level Progress</Text>
                 <View style={styles.progressBar}>
                     <LinearGradient
-                        colors={[theme.colors.primary, theme.colors.secondary]}
+                        colors={[Colors.primary, Colors.secondary]}
                         style={[
                             styles.progressFill,
                             { width: `${(profile?.xp || 0) % 1000 / 10}%` },
@@ -124,7 +124,7 @@ const ProfileScreen = () => {
                     <MaterialCommunityIcons
                         name="map-marker"
                         size={20}
-                        color={theme.colors.primary}
+                        color={Colors.primary}
                     />
                     <Text style={styles.infoText}>{profile?.country}</Text>
                 </View>
@@ -132,7 +132,7 @@ const ProfileScreen = () => {
                     <MaterialCommunityIcons
                         name="translate"
                         size={20}
-                        color={theme.colors.primary}
+                        color={Colors.primary}
                     />
                     <Text style={styles.infoText}>{profile?.language}</Text>
                 </View>
@@ -140,7 +140,7 @@ const ProfileScreen = () => {
                     <MaterialCommunityIcons
                         name="calendar"
                         size={20}
-                        color={theme.colors.primary}
+                        color={Colors.primary}
                     />
                     <Text style={styles.infoText}>
                         Joined {new Date(profile?.created_at || '').toLocaleDateString()}
@@ -158,7 +158,7 @@ const ProfileScreen = () => {
                     style={styles.achievementCard}
                 >
                     <LinearGradient
-                        colors={achievement.isUnlocked ? [theme.colors.primary, theme.colors.secondary] : ['#fff', '#f5f5f5']}
+                        colors={achievement.isUnlocked ? [Colors.primary, Colors.secondary] : ['#fff', '#f5f5f5']}
                         style={styles.achievementCardGradient}
                         start={{ x: 0, y: 0 }}
                         end={{ x: 1, y: 1 }}
@@ -167,7 +167,7 @@ const ProfileScreen = () => {
                             <MaterialCommunityIcons
                                 name={achievement.icon}
                                 size={32}
-                                color={achievement.isUnlocked ? '#fff' : theme.colors.primary}
+                                color={achievement.isUnlocked ? '#fff' : Colors.primary}
                             />
                         </View>
                         <View style={styles.achievementInfo}>
@@ -186,7 +186,7 @@ const ProfileScreen = () => {
                             {!achievement.isUnlocked && (
                                 <View style={styles.progressBar}>
                                     <LinearGradient
-                                        colors={[theme.colors.primary, theme.colors.secondary]}
+                                        colors={[Colors.primary, Colors.secondary]}
                                         style={[
                                             styles.progressFill,
                                             { width: `${achievement.progress}%` },
@@ -224,7 +224,7 @@ const ProfileScreen = () => {
                         <MaterialCommunityIcons
                             name="book-open"
                             size={24}
-                            color={theme.colors.primary}
+                            color={Colors.primary}
                         />
                         <Text style={styles.statValue}>{profile?.lessons_completed || 0}</Text>
                         <Text style={styles.statLabel}>Lessons</Text>
@@ -233,7 +233,7 @@ const ProfileScreen = () => {
                         <MaterialCommunityIcons
                             name="clock"
                             size={24}
-                            color={theme.colors.primary}
+                            color={Colors.primary}
                         />
                         <Text style={styles.statValue}>{profile?.total_study_time || 0}</Text>
                         <Text style={styles.statLabel}>Hours</Text>
@@ -248,7 +248,7 @@ const ProfileScreen = () => {
                         <MaterialCommunityIcons
                             name="trophy"
                             size={24}
-                            color={theme.colors.primary}
+                            color={Colors.primary}
                         />
                         <Text style={styles.statValue}>{profile?.achievements.length || 0}</Text>
                         <Text style={styles.statLabel}>Unlocked</Text>
@@ -257,7 +257,7 @@ const ProfileScreen = () => {
                         <MaterialCommunityIcons
                             name="star"
                             size={24}
-                            color={theme.colors.primary}
+                            color={Colors.primary}
                         />
                         <Text style={styles.statValue}>{profile?.total_xp || 0}</Text>
                         <Text style={styles.statLabel}>Total XP</Text>
@@ -272,7 +272,7 @@ const ProfileScreen = () => {
                         <MaterialCommunityIcons
                             name="account-group"
                             size={24}
-                            color={theme.colors.primary}
+                            color={Colors.primary}
                         />
                         <Text style={styles.statValue}>{profile?.friends.length || 0}</Text>
                         <Text style={styles.statLabel}>Friends</Text>
@@ -281,7 +281,7 @@ const ProfileScreen = () => {
                         <MaterialCommunityIcons
                             name="crown"
                             size={24}
-                            color={theme.colors.primary}
+                            color={Colors.primary}
                         />
                         <Text style={styles.statValue}>{profile?.rank || 0}</Text>
                         <Text style={styles.statLabel}>Rank</Text>
@@ -292,9 +292,9 @@ const ProfileScreen = () => {
     );
 
     return (
-        <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
+        <View style={[styles.container, { backgroundColor: Colors.background }]}>
             <LinearGradient
-                colors={[theme.colors.primary, theme.colors.secondary]}
+                colors={[Colors.primary, Colors.secondary]}
                 style={styles.header}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 1 }}
@@ -311,7 +311,7 @@ const ProfileScreen = () => {
                         <MaterialCommunityIcons
                             name="account"
                             size={20}
-                            color={selectedTab === 'overview' ? '#fff' : theme.colors.primary}
+                            color={selectedTab === 'overview' ? '#fff' : Colors.primary}
                         />
                         <Text style={[
                             styles.tabText,
@@ -330,7 +330,7 @@ const ProfileScreen = () => {
                         <MaterialCommunityIcons
                             name="trophy"
                             size={20}
-                            color={selectedTab === 'achievements' ? '#fff' : theme.colors.primary}
+                            color={selectedTab === 'achievements' ? '#fff' : Colors.primary}
                         />
                         <Text style={[
                             styles.tabText,
@@ -349,7 +349,7 @@ const ProfileScreen = () => {
                         <MaterialCommunityIcons
                             name="chart-bar"
                             size={20}
-                            color={selectedTab === 'stats' ? '#fff' : theme.colors.primary}
+                            color={selectedTab === 'stats' ? '#fff' : Colors.primary}
                         />
                         <Text style={[
                             styles.tabText,

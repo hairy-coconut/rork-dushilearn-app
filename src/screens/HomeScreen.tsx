@@ -119,7 +119,7 @@ export default function HomeScreen() {
             )}
           </View>
           <Text style={styles.streakSubtext}>
-            {streak >= 3 ? 'You're on fire! 🔥' : 'Keep it up for a streak!'}
+            {streak >= 3 ? 'You\'re on fire! 🔥' : 'Keep it up for a streak!'}
           </Text>
         </View>
 
@@ -150,7 +150,7 @@ export default function HomeScreen() {
             color={todayGoalComplete ? colors.jungle : colors.banana}
           />
           <Text style={styles.goalText}>
-            {todayGoalComplete ? 'Goal Complete! 🎉' : 'Today's Goal: 10 XP'}
+            {todayGoalComplete ? 'Goal Complete! 🎉' : 'Today\'s Goal: 10 XP'}
           </Text>
         </TouchableOpacity>
 

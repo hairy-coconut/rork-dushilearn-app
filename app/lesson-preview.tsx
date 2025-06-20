@@ -12,9 +12,9 @@ import {
 } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { supabase } from '@/utils/supabase';
-import { getCurrentUser } from '@/utils/auth';
-import { checkModulePrerequisites } from '@/utils/learningPaths';
+import { supabase } from './utils/supabase';
+import { getCurrentUser } from './utils/auth';
+import { checkModulePrerequisites } from './utils/learningPaths';
 import { LinearGradient } from 'expo-linear-gradient';
 import * as Haptics from 'expo-haptics';
 

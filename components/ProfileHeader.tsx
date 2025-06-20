@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet, Text, View, Image } from 'react-native';
-import Colors from '@/constants/colors';
+import Colors from './constants/colors';
 import ProgressBar from './ProgressBar';
 
 type ProfileHeaderProps = {

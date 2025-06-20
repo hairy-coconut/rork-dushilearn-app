@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import { useSubscription } from '@/contexts/SubscriptionContext';
-import { FEATURE_KEYS } from '../src/types/subscription';
+import { useSubscription } from '../contexts/SubscriptionContext';
+import { FEATURE_KEYS } from '../types/subscription';
 
 export function useFeatureAccess(featureKey: keyof typeof FEATURE_KEYS) {
   const { hasAccess, isLoading } = useSubscription();

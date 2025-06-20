@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, View, Image, Animated, TouchableOpacity } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
-import Colors from '@/constants/colors';
-import { mascots, mascotTips } from '@/constants/mascots';
+import Colors from './constants/colors';
+import { mascots, mascotTips } from './constants/mascots';
 
 type MascotMessageProps = {
   type: 'coco' | 'lora';

@@ -1,5 +1,5 @@
-import { supabase } from '@/utils/supabase';
-import { getCurrentUser } from '@/utils/auth';
+import { supabase } from './utils/supabase';
+import { getCurrentUser } from './utils/auth';
 
 export interface LearningPath {
     id: string;

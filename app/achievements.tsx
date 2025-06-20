@@ -13,7 +13,7 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { BlurView } from 'expo-blur';
 import { useUser } from '../contexts/AuthContext';
-import { useTheme } from '../contexts/ThemeContext';
+import Colors from "../constants/colors";
 import { getUserAchievements, Achievement } from '../utils/achievements';
 import * as Haptics from 'expo-haptics';
 
@@ -57,7 +57,7 @@ const AchievementCard = ({ achievement, onPress }) => {
                 <LinearGradient
                     colors={
                         achievement.isUnlocked
-                            ? [theme.colors.primary, theme.colors.secondary]
+                            ? [Colors.primary, Colors.secondary]
                             : ['#e0e0e0', '#bdbdbd']
                     }
                     style={styles.achievementCardGradient}
@@ -177,9 +177,9 @@ const AchievementsScreen = () => {
     ];
 
     return (
-        <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
+        <View style={[styles.container, { backgroundColor: Colors.background }]}>
             <LinearGradient
-                colors={[theme.colors.primary, theme.colors.secondary]}
+                colors={[Colors.primary, Colors.secondary]}
                 style={styles.header}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 1 }}
@@ -214,7 +214,7 @@ const AchievementsScreen = () => {
                             color={
                                 selectedCategory === category.id
                                     ? '#fff'
-                                    : theme.colors.primary
+                                    : Colors.primary
                             }
                         />
                         <Text
@@ -232,7 +232,7 @@ const AchievementsScreen = () => {
 
             {loading ? (
                 <View style={styles.loadingContainer}>
-                    <ActivityIndicator size="large" color={theme.colors.primary} />
+                    <ActivityIndicator size="large" color={Colors.primary} />
                 </View>
             ) : (
                 <ScrollView
@@ -258,7 +258,7 @@ const AchievementsScreen = () => {
                 >
                     <View style={styles.modalContent}>
                         <LinearGradient
-                            colors={[theme.colors.primary, theme.colors.secondary]}
+                            colors={[Colors.primary, Colors.secondary]}
                             style={styles.modalGradient}
                             start={{ x: 0, y: 0 }}
                             end={{ x: 1, y: 1 }}

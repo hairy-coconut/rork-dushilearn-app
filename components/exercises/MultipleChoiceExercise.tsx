@@ -1,6 +1,9 @@
-import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import React, { useEffect, useRef } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, Animated } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import * as Haptics from 'expo-haptics';
+import Colors from '../constants/colors';
+import { typography, getTextStyle } from '../constants/typography';
 
 interface MultipleChoiceExerciseProps {
   question: string;
@@ -21,6 +24,58 @@ export default function MultipleChoiceExercise({
   onSelectAnswer,
   explanation,
 }: MultipleChoiceExerciseProps) {
+  const shakeAnim = useRef(new Animated.Value(0)).current;
+  const bounceAnim = useRef(new Animated.Value(1)).current;
+  const fadeAnim = useRef(new Animated.Value(1)).current;
+
+  // Trigger animations when showExplanation changes
+  useEffect(() => {
+    if (showExplanation) {
+      const isCorrect = selectedAnswer === correctAnswer;
+      
+      if (isCorrect) {
+        // Correct answer: bounce and haptic feedback
+        Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+        Animated.sequence([
+          Animated.timing(bounceAnim, {
+            toValue: 1.1,
+            duration: 150,
+            useNativeDriver: true,
+          }),
+          Animated.timing(bounceAnim, {
+            toValue: 1,
+            duration: 150,
+            useNativeDriver: true,
+          }),
+        ]).start();
+      } else {
+        // Wrong answer: shake and haptic feedback
+        Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
+        Animated.sequence([
+          Animated.timing(shakeAnim, {
+            toValue: 10,
+            duration: 50,
+            useNativeDriver: true,
+          }),
+          Animated.timing(shakeAnim, {
+            toValue: -10,
+            duration: 50,
+            useNativeDriver: true,
+          }),
+          Animated.timing(shakeAnim, {
+            toValue: 10,
+            duration: 50,
+            useNativeDriver: true,
+          }),
+          Animated.timing(shakeAnim, {
+            toValue: 0,
+            duration: 50,
+            useNativeDriver: true,
+          }),
+        ]).start();
+      }
+    }
+  }, [showExplanation]);
   const getOptionStyle = (option: string) => {
     if (!showExplanation) {
       return selectedAnswer === option ? styles.selectedOption : styles.option;
@@ -52,31 +107,68 @@ export default function MultipleChoiceExercise({
   };
 
   return (
-    <View style={styles.container}>
+    <Animated.View 
+      style={[
+        styles.container,
+        {
+          transform: [
+            { translateX: shakeAnim },
+            { scale: bounceAnim }
+          ]
+        }
+      ]}
+    >
       <Text style={styles.question}>{question}</Text>
       
       <View style={styles.optionsContainer}>
         {options.map((option, index) => (
-          <TouchableOpacity
+          <Animated.View
             key={index}
-            style={[styles.optionButton, getOptionStyle(option)]}
-            onPress={() => onSelectAnswer(option)}
-            disabled={showExplanation}
+            style={[
+              styles.optionButton,
+              getOptionStyle(option),
+              option === selectedAnswer && showExplanation && {
+                transform: [{ scale: option === correctAnswer ? 1.02 : 0.98 }]
+              }
+            ]}
           >
-            <View style={styles.optionContent}>
-              <Text style={styles.optionText}>{option}</Text>
-              {getOptionIcon(option)}
-            </View>
-          </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.optionTouchable}
+              onPress={() => onSelectAnswer(option)}
+              disabled={showExplanation}
+            >
+              <View style={styles.optionContent}>
+                <Text style={[
+                  styles.optionText,
+                  selectedAnswer === option && showExplanation && option === correctAnswer && styles.correctText,
+                  selectedAnswer === option && showExplanation && option !== correctAnswer && styles.incorrectText,
+                ]}>
+                  {option}
+                </Text>
+                {getOptionIcon(option)}
+              </View>
+            </TouchableOpacity>
+          </Animated.View>
         ))}
       </View>
 
       {showExplanation && explanation && (
-        <View style={styles.explanationContainer}>
+        <Animated.View 
+          style={[
+            styles.explanationContainer,
+            { opacity: fadeAnim }
+          ]}
+        >
+          <MaterialCommunityIcons 
+            name="lightbulb-outline" 
+            size={20} 
+            color={Colors.accent} 
+            style={styles.explanationIcon}
+          />
           <Text style={styles.explanationText}>{explanation}</Text>
-        </View>
+        </Animated.View>
       )}
-    </View>
+    </Animated.View>
   );
 }
 
@@ -85,54 +177,77 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   question: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: '#000',
-    marginBottom: 24,
+    ...typography.lesson.question,
+    color: Colors.text,
+    marginBottom: 28,
   },
   optionsContainer: {
-    gap: 12,
+    gap: 16,
   },
   optionButton: {
-    borderRadius: 12,
-    borderWidth: 1,
-    overflow: 'hidden',
+    borderRadius: 16,
+    borderWidth: 2,
+    shadowColor: Colors.primary,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  optionTouchable: {
+    width: '100%',
   },
   option: {
-    backgroundColor: '#F2F2F7',
-    borderColor: '#E5E5EA',
+    backgroundColor: Colors.card,
+    borderColor: Colors.border,
   },
   selectedOption: {
-    backgroundColor: '#E3F2FD',
-    borderColor: '#007AFF',
+    backgroundColor: Colors.backgroundSecondary,
+    borderColor: Colors.primary,
   },
   correctOption: {
     backgroundColor: '#E8F5E9',
-    borderColor: '#34C759',
+    borderColor: Colors.success,
   },
   incorrectOption: {
-    backgroundColor: '#FFEBEE',
-    borderColor: '#FF3B30',
+    backgroundColor: '#FFE8E8',
+    borderColor: Colors.error,
   },
   optionContent: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    padding: 16,
+    padding: 20,
   },
   optionText: {
-    fontSize: 16,
-    color: '#000',
+    ...typography.lesson.option,
+    color: Colors.text,
     flex: 1,
   },
+  correctText: {
+    color: Colors.success,
+    fontWeight: '600',
+  },
+  incorrectText: {
+    color: Colors.error,
+    fontWeight: '600',
+  },
   explanationContainer: {
-    marginTop: 24,
-    padding: 16,
-    backgroundColor: '#F2F2F7',
-    borderRadius: 12,
+    marginTop: 28,
+    padding: 20,
+    backgroundColor: Colors.backgroundSecondary,
+    borderRadius: 16,
+    borderLeftWidth: 4,
+    borderLeftColor: Colors.accent,
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+  },
+  explanationIcon: {
+    marginRight: 12,
+    marginTop: 2,
   },
   explanationText: {
-    fontSize: 16,
-    color: '#000',
+    ...typography.lesson.explanation,
+    color: Colors.text,
+    flex: 1,
   },
 }); 
