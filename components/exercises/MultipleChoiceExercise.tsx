@@ -2,8 +2,8 @@ import React, { useEffect, useRef } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Animated } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import * as Haptics from 'expo-haptics';
-import Colors from '../constants/colors';
-import { typography, getTextStyle } from '../constants/typography';
+import Colors from '../../constants/colors';
+import { typography, getTextStyle } from '../../constants/typography';
 
 interface MultipleChoiceExerciseProps {
   question: string;
