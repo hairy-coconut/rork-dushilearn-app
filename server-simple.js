@@ -1,8 +1,26 @@
 const http = require('http');
 const fs = require('fs');
 const path = require('path');
+const { exec } = require('child_process');
 
 const PORT = process.env.PORT || 3000;
+
+// Build the app if dist doesn't exist
+if (!fs.existsSync(path.join(__dirname, 'dist'))) {
+  console.log('Building app...');
+  exec('npm run build:web', (error, stdout, stderr) => {
+    if (error) {
+      console.error('Build failed:', error);
+      process.exit(1);
+    }
+    console.log('Build completed');
+    startServer();
+  });
+} else {
+  startServer();
+}
+
+function startServer() {
 
 const mimeTypes = {
   '.html': 'text/html',
@@ -37,6 +55,10 @@ const server = http.createServer((req, res) => {
     // For SPA routing, serve index.html for non-asset requests
     if (!req.url.includes('.') && !req.url.startsWith('/_expo') && !req.url.startsWith('/assets')) {
       filePath = path.join(__dirname, 'dist', 'index.html');
+      // If dist/index.html doesn't exist, serve fallback
+      if (!fs.existsSync(filePath)) {
+        filePath = path.join(__dirname, 'public', 'index.html');
+      }
     } else {
       res.writeHead(404);
       res.end('Not Found');
@@ -59,6 +81,8 @@ const server = http.createServer((req, res) => {
   });
 });
 
-server.listen(PORT, () => {
+server.listen(PORT, '0.0.0.0', () => {
   console.log(`DushiLearn server running on port ${PORT}`);
 });
+
+}
