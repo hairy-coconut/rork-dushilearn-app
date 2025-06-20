@@ -21,7 +21,7 @@ import {
   FillInBlankExercise,
   MatchingExercise,
   ListeningExercise,
-} from './components/exercises';
+} from '../components/exercises';
 
 const { width } = Dimensions.get('window');
 

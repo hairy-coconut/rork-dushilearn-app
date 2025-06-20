@@ -13,7 +13,7 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import * as Haptics from 'expo-haptics';
 import { getDailyGoal, adjustDailyGoal, DailyGoalProgress } from '../utils/dailyGoals';
-import DailyGoalCard from './components/DailyGoalCard';
+import DailyGoalCard from '../components/DailyGoalCard';
 import Colors from '../constants/colors';
 
 const DAILY_GOAL_OPTIONS = [
