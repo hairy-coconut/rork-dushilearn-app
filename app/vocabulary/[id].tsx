@@ -2,10 +2,10 @@ import React from 'react';
 import { StyleSheet, Text, View, ScrollView, TouchableOpacity } from 'react-native';
 import { useLocalSearchParams, Stack, useRouter } from 'expo-router';
 import { MaterialIcons } from '@expo/vector-icons';
-import Colors from '../constants/colors';
-import { categories } from '../constants/lessons';
-import { wordAudios } from '../constants/audio';
-import VocabularyCard from '../components/VocabularyCard';
+import Colors from '../../constants/colors';
+import { categories } from '../../constants/lessons';
+import { wordAudios } from '../../constants/audio';
+import VocabularyCard from '../../components/VocabularyCard';
 
 export default function VocabularyScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
