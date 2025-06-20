@@ -1,8 +1,8 @@
-import { supabase } from './utils/supabase';
-import { getCurrentUser } from './utils/auth';
-import { updateLessonProgress, getModuleProgress } from './utils/learningPaths';
-import { checkAchievements, unlockAchievement } from './utils/achievements';
-import { addXP } from './utils/progressTracking';
+import { supabase } from './supabase';
+import { getCurrentUser } from './auth';
+import { updateLessonProgress, getModuleProgress } from './learningPaths';
+import { checkAchievements, unlockAchievement } from './achievements';
+import { addXP } from './progressTracking';
 
 export interface LessonResult {
   moduleId: string;
