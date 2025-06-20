@@ -2,6 +2,10 @@ import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import Colors from '../constants/colors';
 
+export const unstable_settings = {
+  initialRouteName: 'splash',
+};
+
 export default function RootLayout() {
   return (
     <>

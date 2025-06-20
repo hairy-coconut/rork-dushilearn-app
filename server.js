@@ -1,21 +1,24 @@
 const express = require('express');
 const path = require('path');
+const fs = require('fs');
 const app = express();
 
 // Set port
 const PORT = process.env.PORT || 3000;
 
-// Serve static files from public directory
+// Disable Express etag to avoid caching issues
+app.disable('etag');
+
+// Serve static files
+app.use(express.static(path.join(__dirname, 'dist')));
 app.use('/assets', express.static(path.join(__dirname, 'assets')));
-app.use('/_expo', express.static(path.join(__dirname, 'dist/_expo')));
-app.use('/favicon.ico', express.static(path.join(__dirname, 'dist/favicon.ico')));
 
 // Health check endpoint
 app.get('/health', (req, res) => {
   res.json({ status: 'ok', app: 'DushiLearn', version: '1.0.0' });
 });
 
-// API routes (for future backend integration)
+// API routes
 app.get('/api/status', (req, res) => {
   res.json({ 
     message: 'DushiLearn API is running',
@@ -24,9 +27,33 @@ app.get('/api/status', (req, res) => {
   });
 });
 
-// Serve the React Native web app for all other routes
+// Handle all routes by serving the appropriate HTML file or fallback to index.html
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'dist', 'index.html'));
+  let filePath;
+  
+  // Remove leading slash and handle root
+  const cleanPath = req.path === '/' ? 'index' : req.path.slice(1);
+  
+  // Try to find the corresponding HTML file
+  const possiblePaths = [
+    path.join(__dirname, 'dist', `${cleanPath}.html`),
+    path.join(__dirname, 'dist', cleanPath, 'index.html'),
+    path.join(__dirname, 'dist', 'index.html') // fallback
+  ];
+  
+  // Find the first existing file
+  for (const possiblePath of possiblePaths) {
+    if (fs.existsSync(possiblePath)) {
+      filePath = possiblePath;
+      break;
+    }
+  }
+  
+  if (filePath) {
+    res.sendFile(filePath);
+  } else {
+    res.status(404).sendFile(path.join(__dirname, 'dist', 'index.html'));
+  }
 });
 
 // Error handling middleware
