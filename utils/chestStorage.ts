@@ -6,7 +6,7 @@ function getStorage() {
   }
 }
 
-import { ChestRarity } from './constants/dailyChest';
+import { ChestRarity } from '../constants/dailyChest';
 
 const CHEST_STORAGE_KEY = '@dushilearn_chest_state';
 

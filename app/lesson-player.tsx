@@ -11,7 +11,7 @@ import {
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { BlurView } from 'expo-blur';
-import Colors from './constants/colors';
+import Colors from '../constants/colors';
 import { useUser } from '../contexts/UserContext';
 import { LessonContent, LessonType } from '../utils/lessonTypes';
 import * as Haptics from 'expo-haptics';

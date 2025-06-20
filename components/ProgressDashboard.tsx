@@ -9,9 +9,9 @@ import {
 } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
-import { UserProgress, Achievement } from './constants/types';
+import { UserProgress, Achievement } from '../constants/types';
 import { getProgress } from './utils/progressTracking';
-import Colors from './constants/colors';
+import Colors from '../constants/colors';
 
 const { width } = Dimensions.get('window');
 

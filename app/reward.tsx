@@ -9,8 +9,8 @@ import {
 } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { Reward } from './constants/dailyChest';
-import Colors from './constants/colors';
+import { Reward } from '../constants/dailyChest';
+import Colors from '../constants/colors';
 import soundManager from './utils/soundEffects';
 import { usePremiumFeature } from './hooks/useFeatureAccess';
 import ConfettiCannon from 'react-native-confetti-cannon';

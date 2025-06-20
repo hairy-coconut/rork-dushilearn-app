@@ -14,7 +14,7 @@ import { BlurView } from 'expo-blur';
 import * as Haptics from 'expo-haptics';
 import ConfettiCannon from 'react-native-confetti-cannon';
 import { Audio } from 'expo-av';
-import Colors from './constants/colors';
+import Colors from '../constants/colors';
 
 interface RewardCelebrationModalProps {
     visible: boolean;

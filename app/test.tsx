@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import Colors from './constants/colors';
+import Colors from '../constants/colors';
 import { TEST_LESSON } from '../utils/testData';
 import { TEST_STORY } from '../utils/testData';
 import { router } from 'expo-router';

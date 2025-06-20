@@ -11,7 +11,7 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import * as Haptics from 'expo-haptics';
 import { DailyGoalProgress } from './utils/dailyGoals';
-import Colors from './constants/colors';
+import Colors from '../constants/colors';
 
 const { width } = Dimensions.get('window');
 

@@ -10,8 +10,8 @@ import {
 } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { Reward } from './constants/dailyChest';
-import Colors from './constants/colors';
+import { Reward } from '../constants/dailyChest';
+import Colors from '../constants/colors';
 import soundManager from './utils/soundEffects';
 
 const { width, height } = Dimensions.get('window');

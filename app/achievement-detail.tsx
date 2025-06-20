@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, ActivityIndicator, TouchableOpacity, Alert } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useLocalSearchParams, Stack } from 'expo-router';
-import Colors from './constants/colors';
+import Colors from '../constants/colors';
 import { Achievement, getAchievementById } from './utils/achievements';
 import { shareAchievement } from './utils/achievementSharing';
 

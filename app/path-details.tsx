@@ -14,7 +14,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { BlurView } from 'expo-blur';
 import { useRoute, useNavigation } from '@react-navigation/native';
 import { useUser } from '../contexts/AuthContext';
-import Colors from './constants/colors';
+import Colors from '../constants/colors';
 import {
     getAvailablePaths,
     getUserProgress,

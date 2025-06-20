@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import { StyleSheet, Text, View, TouchableOpacity, Image, ScrollView } from 'react-native';
 import { useRouter } from 'expo-router';
 import { MaterialIcons } from '@expo/vector-icons';
-import Colors from './constants/colors';
-import { mascots } from './constants/mascots';
+import Colors from '../constants/colors';
+import { mascots } from '../constants/mascots';
 
 type LearningReason = 'tourist' | 'expat' | 'local' | 'romance' | 'other';
 type PreferredMascot = 'coco' | 'lora';

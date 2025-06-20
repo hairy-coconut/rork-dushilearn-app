@@ -16,7 +16,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { BlurView } from 'expo-blur';
 import { Audio } from 'expo-av';
 import { useRouter, useLocalSearchParams } from 'expo-router';
-import Colors from './constants/colors';
+import Colors from '../constants/colors';
 import { useUser } from '../contexts/AuthContext';
 import { LessonContent, getLessonById } from '../utils/lessonTypes';
 import * as Haptics from 'expo-haptics';

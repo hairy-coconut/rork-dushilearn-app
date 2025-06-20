@@ -3,7 +3,7 @@ import { View, StyleSheet, TouchableOpacity, Text } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import Leaderboard from './components/Leaderboard';
 import FriendsList from './components/FriendsList';
-import Colors from './constants/colors';
+import Colors from '../constants/colors';
 
 type Tab = 'leaderboard' | 'friends';
 

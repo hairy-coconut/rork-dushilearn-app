@@ -1,8 +1,8 @@
 import React from 'react';
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
-import Colors from './constants/colors';
+import Colors from '../constants/colors';
 import AudioButton from './AudioButton';
-import { WordAudio } from './constants/audio';
+import { WordAudio } from '../constants/audio';
 
 type VocabularyCardProps = {
   word: WordAudio;

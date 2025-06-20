@@ -10,7 +10,7 @@ import {
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import * as Haptics from 'expo-haptics';
-import Colors from './constants/colors';
+import Colors from '../constants/colors';
 
 interface FloatingActionButtonProps {
   onPress: () => void;

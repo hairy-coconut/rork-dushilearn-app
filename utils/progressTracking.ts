@@ -1,4 +1,4 @@
-import { UserProgress, Achievement, Level, LearningPath } from './constants/types';
+import { UserProgress, Achievement, Level, LearningPath } from '../constants/types';
 import { userProgressApi, achievementsApi } from './supabase';
 import { supabase } from './supabase';
 import { getCurrentUser } from './supabase';

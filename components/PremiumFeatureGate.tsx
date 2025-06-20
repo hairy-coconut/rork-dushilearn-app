@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { usePremiumFeature } from './hooks/useFeatureAccess';
-import Colors from './constants/colors';
+import Colors from '../constants/colors';
 
 interface PremiumFeatureGateProps {
   children: React.ReactNode;

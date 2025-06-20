@@ -10,7 +10,7 @@ import {
     RefreshControl,
 } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import Colors from './constants/colors';
+import Colors from '../constants/colors';
 import { router } from 'expo-router';
 import { supabase } from '../utils/supabase';
 import { LinearGradient } from 'expo-linear-gradient';
