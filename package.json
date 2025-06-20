@@ -2,7 +2,7 @@
   "name": "dushilearn-app",
   "version": "1.0.0",
   "scripts": {
-    "start": "npm run build:web && npx http-server dist -p ${PORT:-3000} --cors",
+    "start": "npm run build:web && node server-simple.js",
     "dev": "expo start",
     "android": "expo start --android", 
     "ios": "expo start --ios",
