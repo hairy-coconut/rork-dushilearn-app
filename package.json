@@ -2,7 +2,7 @@
   "name": "dushilearn-app",
   "version": "1.0.0",
   "scripts": {
-    "start": "npm run build:web && npx serve dist -s -l $PORT",
+    "start": "node server-simple.js",
     "build": "npm run build:web",
     "dev": "expo start",
     "android": "expo start --android", 
@@ -36,7 +36,6 @@
     "expo-splash-screen": "^0.30.9",
     "expo-status-bar": "~2.2.3",
     "express": "^5.1.0",
-    "serve": "^14.2.3",
     "react": "19.0.0",
     "react-dom": "19.0.0",
     "react-native": "0.79.3",
