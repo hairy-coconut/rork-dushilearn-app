@@ -4,6 +4,9 @@ const path = require('path');
 const { exec } = require('child_process');
 
 const PORT = process.env.PORT || 3000;
+console.log('Starting server...');
+console.log('PORT env var:', process.env.PORT);
+console.log('Will bind to port:', PORT);
 
 // Build the app if dist doesn't exist
 if (!fs.existsSync(path.join(__dirname, 'dist'))) {
